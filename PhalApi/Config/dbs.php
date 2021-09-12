@@ -11,9 +11,9 @@ return array(
     'servers' => array(
         'db_appapi' => array(                         //服务器标记
             'host'      => '127.0.0.1',             //数据库域名
-            'name'      => 'rttttyy',               //数据库名字
-            'user'      => 'rttttyy',                  //数据库用户名
-            'password'  => 'rrffffitr3',	                    //数据库密码
+            'name'      => 'zbdata',               //数据库名字
+            'user'      => 'zbData',                  //数据库用户名
+            'password'  => 'BbxNJwSNYxJNr6iA',	                    //数据库密码
             'port'      => '3306',                  //数据库端口
             'charset'   => 'utf8mb4',                  //数据库字符集
         ),
