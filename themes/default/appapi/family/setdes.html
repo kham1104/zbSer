@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <include file="appapi@head"/>
+	<link type="text/css" rel="stylesheet" href="__STATIC__/appapi/css/family.css?t=1561712925"/>
+    <title>修改简介</title>
+</head>
+<body class="setdes">
+		<div class="textarea">
+			<textarea id="des" <if condition="$type neq '1'">readonly</if>>{$familyinfo['briefing']}</textarea>
+		</div>
+		<if condition="$type eq '1'">
+		<div class="setdes_post button_default" >保存</div>
+		</if>
+	<script>
+		var familyid='{$familyinfo['id']}';
+	</script>
+	<include file="appapi@footer"/>
+	<script src="__STATIC__/appapi/js/family.js"></script>
+</body>
+</html>
