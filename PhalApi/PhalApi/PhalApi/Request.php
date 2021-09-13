@@ -83,10 +83,16 @@ hIoXFbEiLRTroQ8kRlDET5mZMLUoN8N3MbqHsQIsH20=";
      */
     private static function _readPubkey()
     {
-        $key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCihLWIdO9Kh/WhEp90QuX9bcGy
-6/elqspgcfDKYBP1LfiCLFsPz0aAGWZsPFQq4UatbIwQwYrw6kFtyv0nBxr+/N/Y
-huvy1OLA60mXiP6zW8aGxpndoCbIgjHsG2pTNz95wygiv8aMXkICgXWtjd9Qlm0Z
-yUw72G8ecg0K1mZhtwIDAQAB";
+        //服务端公钥
+//        $key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCihLWIdO9Kh/WhEp90QuX9bcGy
+//6/elqspgcfDKYBP1LfiCLFsPz0aAGWZsPFQq4UatbIwQwYrw6kFtyv0nBxr+/N/Y
+//huvy1OLA60mXiP6zW8aGxpndoCbIgjHsG2pTNz95wygiv8aMXkICgXWtjd9Qlm0Z
+//yUw72G8ecg0K1mZhtwIDAQAB";
+        //客户端公钥
+        $key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCS3RIUMb1nuLxQ9O4n4aYMeQDU
+dquf3mBEFmbSysdw911kVpx57t3mE/YUaKk1BHAkewlB3em3KJjcXpHeaG7l+OGx
+1ClROwIokdI7VW+/d0d9aVkAaplfi33kAdj/JuYyJ8GLLN7EyfaB/QdDWv3iSKLj
+vI7yAJ3maGDDtVq4UQIDAQAB";
 //        $pem = "-----BEGIN PUBLIC KEY-----\n" . chunk_split(self::ecpss_pubkey, 64, "\n") . "-----END PUBLIC KEY-----\n";
         $pem = "-----BEGIN PUBLIC KEY-----\n" . $key . "\n-----END PUBLIC KEY-----\n";
         return openssl_pkey_get_public($pem);
@@ -208,9 +214,11 @@ yUw72G8ecg0K1mZhtwIDAQAB";
      */
     protected function genData($data) {
         if (!isset($data) || !is_array($data)) {
+            $enString = $_REQUEST;
 //            var_dump($_REQUEST);
-            $enString = self::sslEn(json_encode($_REQUEST));
-            echo $enString;
+//            $enString = self::sslEn(json_encode($enString));
+//            echo $enString;
+            //公钥解密
             $deString = self::sslDe($enString);
 //            var_dump(self::sslDe($enString));
             $data = json_decode($deString,true);
