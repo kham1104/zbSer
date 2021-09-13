@@ -51,6 +51,112 @@ class PhalApi_Request {
      */
     protected $actionName;
 
+    /**
+     * 私钥格式化带验证
+     * @param $key
+     * @return resource
+     */
+    private static function _readPrikey()
+    {
+        $key = "MIICXAIBAAKBgQCihLWIdO9Kh/WhEp90QuX9bcGy6/elqspgcfDKYBP1LfiCLFsP
+z0aAGWZsPFQq4UatbIwQwYrw6kFtyv0nBxr+/N/Yhuvy1OLA60mXiP6zW8aGxpnd
+oCbIgjHsG2pTNz95wygiv8aMXkICgXWtjd9Qlm0ZyUw72G8ecg0K1mZhtwIDAQAB
+AoGAJqsv7F9yXkf6TFB7izStt36pg3J80rjP/WGu+uAgb4p4IjT+l8ToT+t7QM6b
+8jX21KXKr+P1NLxwQ/j0AhjBNb+8s8lzDGx6UKXcoGOdngYAi4L4Kvdo6DCilDJr
+7tvU6Mni5903hwcemj80+f2Yi0rXbOh5l541GZ4DJJx92ikCQQCy9mpYyhPfr7TW
+nE/juNrr4RLGGJ0jeELauGPKE3HYKr9GzTmV/G0v7m217i1tBhZRrcDk77QvrEh/
+WkKYdXd/AkEA6HonqHeNyHV6Fr2tKjoBpncyGGWjr6JfLhcsFiMe8HuYlGDbnfu6
+8aer+qah3UAl8jDE0++mc+kuRSpWcdPxyQJASRfJwa/vRAoQkyLOolSq3XJU56G/
+9G+25nwvDaa5da+n5fQGFBNASTZZitfXp9K3pO6RfS/F6T61cYZc8sXvYwJBAK0k
+XWkBMZ28sONC/TdX4GbEm5DEEjb67Xx8UZ9jJOXih27q/GYbV84nHNUfSapo3loU
+rGNUN1pYrtdgguVf/tECQDs46IrHZZPm5hf3wb2vsIuAQ72kYc7oN49cy5oWfyb0
+hIoXFbEiLRTroQ8kRlDET5mZMLUoN8N3MbqHsQIsH20=";
+//        $pem = "-----BEGIN RSA PRIVATE KEY-----\n" . chunk_split($key, 64, "\n") . "-----END RSA PRIVATE KEY-----\n";
+        $pem = "-----BEGIN RSA PRIVATE KEY-----\n" . $key . "\n-----END RSA PRIVATE KEY-----\n";
+        return openssl_pkey_get_private($pem);
+    }
+
+    /**
+     * 公钥格式化带验证
+     * @param $key
+     * @return resource
+     */
+    private static function _readPubkey()
+    {
+        $key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCihLWIdO9Kh/WhEp90QuX9bcGy
+6/elqspgcfDKYBP1LfiCLFsPz0aAGWZsPFQq4UatbIwQwYrw6kFtyv0nBxr+/N/Y
+huvy1OLA60mXiP6zW8aGxpndoCbIgjHsG2pTNz95wygiv8aMXkICgXWtjd9Qlm0Z
+yUw72G8ecg0K1mZhtwIDAQAB";
+//        $pem = "-----BEGIN PUBLIC KEY-----\n" . chunk_split(self::ecpss_pubkey, 64, "\n") . "-----END PUBLIC KEY-----\n";
+        $pem = "-----BEGIN PUBLIC KEY-----\n" . $key . "\n-----END PUBLIC KEY-----\n";
+        return openssl_pkey_get_public($pem);
+    }
+
+    /**
+     * RSA 私钥、公钥加密
+     * @param $data
+     * @param $key
+     * @param $type
+     * @return string
+     */
+    private static function sslEn($data, $type = 'pi')
+    {
+        $encrypted = "";
+        if ($type == 'pi') {
+            //私钥加密
+            foreach (str_split($data, 117) as $chunk) {
+                openssl_private_encrypt($chunk, $encryptData, self::_readPrikey());
+                $encrypted .= $encryptData;
+            }
+        } elseif ($type == 'pu') {
+            //公钥加密
+            foreach (str_split($data, 117) as $chunk) {
+                openssl_public_encrypt($chunk, $encryptData, self::_readPubkey());
+                $encrypted .= $encryptData;
+            }
+        }
+        $encrypt_data = base64_encode($encrypted);//BASE64转换
+        return $encrypt_data;
+    }
+
+    /**
+     * RSA 私钥、公钥解密
+     * @param $data
+     * @param $key
+     * @param $type
+     * @return string
+     */
+    private static function sslDe($data, $type = 'pu')
+    {
+        $hex_encrypt_data = trim($data);
+        $encrypt_data = base64_decode($hex_encrypt_data);//BASE64转换
+        $decrypted = "";
+        if ($type == 'pu') {
+            //公钥解密
+            $arrThrunk = str_split($encrypt_data, 256);
+            foreach ($arrThrunk as $trunk) {
+                $temp = '';
+                if (openssl_public_decrypt($trunk, $temp, self::_readPubkey())) {
+                    $decrypted .= $temp;
+                } else {
+                    return '';
+                }
+            }
+        } elseif ($type == 'pi') {
+            //私钥解密  ---- 分段解密
+            $arrThrunk = str_split($encrypt_data, 256);
+            foreach ($arrThrunk as $trunk) {
+                $temp = '';
+                if (openssl_private_decrypt($trunk, $temp, self::_readPrikey())) {
+                    $decrypted .= $temp;
+                } else {
+                    return '';
+                }
+            }
+        }
+        return $decrypted;
+    }
+
     /** 
      * - 如果需要定制已知的数据源（即已有数据成员），则可重载此方法，例
      *
@@ -102,7 +208,13 @@ class PhalApi_Request {
      */
     protected function genData($data) {
         if (!isset($data) || !is_array($data)) {
-            return $_REQUEST;
+//            var_dump($_REQUEST);
+            $enString = self::sslEn(json_encode($_REQUEST));
+            echo $enString;
+            $deString = self::sslDe($enString);
+//            var_dump(self::sslDe($enString));
+            $data = json_decode($deString,true);
+            return $data;
         }
 
         return $data;
