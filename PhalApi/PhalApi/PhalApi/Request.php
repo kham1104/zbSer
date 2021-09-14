@@ -212,26 +212,54 @@ vI7yAJ3maGDDtVq4UQIDAQAB";
      *
      * @return array
      */
+//    protected function genData($data) {
+//        if (!isset($data) || !is_array($data)) {
+//            if($_SERVER['REQUEST_METHOD'] === "POST"){
+//                $enString = $_REQUEST;
+////            var_dump($_REQUEST);
+////            $enString = self::sslEn(json_encode($enString));
+////            echo $enString;
+//                //公钥解密
+//                $deString = self::sslDe($enString);
+////            var_dump(self::sslDe($enString));
+//                $data = json_decode($deString,true);
+//                return $data;
+//            }else{
+//                return $_REQUEST;
+//            }
+//
+//        }
+//
+//        return $data;
+//    }
+
     protected function genData($data) {
-        if (!isset($data) || !is_array($data)) {
-            if($_SERVER['REQUEST_METHOD'] === "POST"){
-                $enString = $_REQUEST;
+    if (!isset($data) || !is_array($data)) {
+        if(is_array($_REQUEST)) {
+            $enString = $_REQUEST;
+            return $enString;
+        }else{
+            $enString = $_REQUEST;
+            //公钥解密
+            $deString = self::sslDe($enString);
+//            var_dump(self::sslDe($enString));
+            $data = json_decode($deString,true);
+            return $data;
+        }
 //            var_dump($_REQUEST);
 //            $enString = self::sslEn(json_encode($enString));
 //            echo $enString;
-                //公钥解密
-                $deString = self::sslDe($enString);
-//            var_dump(self::sslDe($enString));
-                $data = json_decode($deString,true);
-                return $data;
-            }else{
-                return $_REQUEST;
-            }
 
-        }
+//        }else{
+//            return $_REQUEST;
+//        }
 
-        return $data;
     }
+
+    return $data;
+}
+
+
 
     /**
      * 初始化请求Header头信息
