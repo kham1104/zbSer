@@ -1,0 +1,91 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li ><a href="{:url('Liveconf/index')}">列表</a></li>
+			<li class="active"><a >{:lang('EDIT')}</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('Liveconf/editPost')}">
+            <div class="form-group">
+				<label for="input-type" class="col-sm-2 control-label"><span class="form-required">*</span>类型</label>
+				<div class="col-md-6 col-sm-10" id="livetype">
+					<label class="radio-inline"><input type="radio" name="livetype" value="2" <if condition="2 eq $data['livetype']">checked</if>> 腾讯云</label>
+					<label class="radio-inline"><input type="radio" name="livetype" value="7" <if condition="7 eq $data['livetype']">checked</if>> 百度云</label>
+				</div>
+			</div>
+            
+            <div class="form-group">
+				<label for="input-liveconf" class="col-sm-2 control-label"><span class="form-required">*</span>参数</label>
+				<div class="col-md-6 col-sm-10">
+<!--					<input type="text" class="form-control" id="input-liveconf" name="liveconf" value="{$data['liveconf']}" style="width:300px;">-->
+					tx_appid(APPID),tx_bizid(BIZID),tx_push_key(推流KEY),tx_api_key(鉴权KEY),tx_push(推流域名),tx_pull(播流域名),tx_acc_key(低延迟KEY)
+					<textarea rows="10" cols="30" class="form-control" id="input-liveconf" name="liveconf" style="width:300px;">{$data['liveconf']}</textarea>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="input-type" class="col-sm-2 control-label"><span class="form-required">*</span>状态</label>
+				<div class="col-md-6 col-sm-10" id="status">
+					<label class="radio-inline"><input type="radio" name="status" value="0" <if condition="0 eq $data['status']">checked</if>> 不启用</label>
+					<label class="radio-inline"><input type="radio" name="status" value="1" <if condition="1 eq $data['status']">checked</if>> 启用</label>
+				</div>
+			</div>
+
+            <div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<input type="hidden" name="id" value="{$data.id}" />
+					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('EDIT')}</button>
+					<a class="btn btn-default" href="javascript:history.back(-1);">{:lang('BACK')}</a>
+				</div>
+			</div>
+
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+    <script type="text/javascript">
+        (function(){
+            $('.btn-cancel-thumbnail').click(function () {
+                $('#thumbnail-preview').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+                $('#thumbnail').val('');
+            });
+            
+            $('.btn-cancel-thumbnail2').click(function () {
+                $('#thumbnail2-preview').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+                $('#thumbnail2').val('');
+            });
+            $("#type label input").on('click',function(){
+                var v=$(this).val();
+                if(v==0){
+                    $("#mark_3").removeAttr('disabled')
+                }else{
+                    //if($("#mark_3").attr("checked")){
+                    if($('#mark label input:checked').val()==3){
+                        //$("#mark_0").removeAttr('checked');
+                        $("#mark_0").attr('checked','checked');
+                        $("#tips").hide();
+                    }
+                    $("#mark_3").attr('disabled','disabled');
+                }
+            })
+            
+            $("#mark label input").on('change',function(){
+                var v=$(this).val();
+                if(v==3){
+                    $("#tips").show();
+                }else{
+                    $("#tips").hide();
+                }
+            })
+            
+            $("#swftype label").on('click',function(){
+                var v=$("input",this).val();
+                var b=$("#swftype_bd_"+v);
+                b.siblings().hide();
+                b.show();
+            })
+        })()
+
+    </script>
+</body>
+</html>

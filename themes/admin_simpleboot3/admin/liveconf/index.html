@@ -1,0 +1,52 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a>列表</a></li>
+            <li><a href="{:url('Liveconf/add')}">{:lang('ADD')}</a></li>
+		</ul>
+		<form method="post" class="js-ajax-form" action="{:url('Liveconf/listOrder')}">
+			<div class="table-actions">
+                <button class="btn btn-primary btn-sm js-ajax-submit" type="submit">{:lang('SORT')}</button>
+            </div>
+		
+			<table class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>类型</th>
+						<th>参数</th>
+						<th>状态</th>
+						<th>发布时间</th>
+						<th align="center">{:lang('ACTIONS')}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<foreach name="lists" item="vo">
+					<tr>
+						<td>{$vo.id}</td>
+						<td><if condition="2 eq $vo['livetype']">腾讯云</if><if condition="7 eq $vo['livetype']">百度云</if></td>
+						<td>{$vo['liveconf']}</td>
+						<td><if condition="0 eq $vo['status']">关闭</if><if condition="1 eq $vo['status']">启用</if></td>
+						<td>{$vo['addtime']}</td>
+						<td>
+                            <a class="btn btn-xs btn-primary" href='{:url("Liveconf/edit",array("id"=>$vo["id"]))}'>{:lang('EDIT')}</a>
+							<if condition="0 eq $vo['status']">
+                            <a class="btn btn-xs btn-primary" href='{:url("Liveconf/start",array("id"=>$vo["id"]))}'>启用</a>
+							</if>
+<!--							<if condition="1 eq $vo['status']">-->
+<!--                            <a class="btn btn-xs btn-danger" href='{:url("Liveconf/stop",array("id"=>$vo["id"]))}'>不启用</a>-->
+<!--							</if>-->
+							<a class="btn btn-xs btn-danger js-ajax-delete" href="{:url('Liveconf/del',array('id'=>$vo['id']))}">{:lang('DELETE')}</a>
+						</td>
+					</tr>
+					</foreach>
+				</tbody>
+			</table>
+			<div class="pagination">{$page}</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>
