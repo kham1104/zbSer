@@ -214,15 +214,20 @@ vI7yAJ3maGDDtVq4UQIDAQAB";
      */
     protected function genData($data) {
         if (!isset($data) || !is_array($data)) {
-            $enString = $_REQUEST;
+            if($_SERVER['REQUEST_METHOD'] === "POST"){
+                $enString = $_REQUEST;
 //            var_dump($_REQUEST);
 //            $enString = self::sslEn(json_encode($enString));
 //            echo $enString;
-            //公钥解密
-            $deString = self::sslDe($enString);
+                //公钥解密
+                $deString = self::sslDe($enString);
 //            var_dump(self::sslDe($enString));
-            $data = json_decode($deString,true);
-            return $data;
+                $data = json_decode($deString,true);
+                return $data;
+            }else{
+                return $_REQUEST;
+            }
+
         }
 
         return $data;
