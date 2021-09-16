@@ -139,7 +139,7 @@ vI7yAJ3maGDDtVq4UQIDAQAB";
         $decrypted = "";
         if ($type == 'pu') {
             //公钥解密
-            $arrThrunk = str_split($encrypt_data, 256);
+            $arrThrunk = str_split($encrypt_data, 128);
             foreach ($arrThrunk as $trunk) {
                 $temp = '';
                 if (openssl_public_decrypt($trunk, $temp, self::_readPubkey())) {
@@ -150,7 +150,7 @@ vI7yAJ3maGDDtVq4UQIDAQAB";
             }
         } elseif ($type == 'pi') {
             //私钥解密  ---- 分段解密
-            $arrThrunk = str_split($encrypt_data, 256);
+            $arrThrunk = str_split($encrypt_data, 128);
             foreach ($arrThrunk as $trunk) {
                 $temp = '';
                 if (openssl_private_decrypt($trunk, $temp, self::_readPrikey())) {
@@ -160,7 +160,7 @@ vI7yAJ3maGDDtVq4UQIDAQAB";
                 }
             }
         }
-        return $decrypted;
+        return trim($decrypted);
     }
 
     /** 
