@@ -237,6 +237,7 @@ vI7yAJ3maGDDtVq4UQIDAQAB";
     if (!isset($data) || !is_array($data)) {
         if(isset($_REQUEST['datastring']) && !is_array($_REQUEST['datastring'])) {
             $enString = $_REQUEST['datastring'];
+            $enString = urldecode($enString);
 //            var_dump($_REQUEST);
             //公钥解密
             $deString = self::sslDe($enString);
