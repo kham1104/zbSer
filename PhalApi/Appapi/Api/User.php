@@ -296,7 +296,8 @@ class Api_User extends PhalApi_Api {
 			$family_switch=0;
 			$shelves=0;
 		}
-        $list1[]=array('id'=>'19','name'=>'我的视频','thumb'=>get_upload_path("/static/appapi/images/personal/video.png"),'href'=>'' );
+//        $list1[]=array('id'=>'19','name'=>'我的视频','thumb'=>get_upload_path("/static/appapi/images/personal/video.png"),'href'=>'' );
+        $list1[]=array('id'=>'17','name'=>'意见反馈','thumb'=>get_upload_path("/static/appapi/images/personal/video.png") ,'href'=>get_upload_path('/Appapi/feedback/index'));
 
         $list1[]=array('id'=>'23','name'=>'我的动态','thumb'=>get_upload_path("/static/appapi/images/personal/dymic.png"),'href'=>'' );
 		if($shelves){
@@ -309,9 +310,9 @@ class Api_User extends PhalApi_Api {
         $list1[]=array('id'=>'11','name'=>'我的认证','thumb'=>get_upload_path("/static/appapi/images/personal/auth.png") ,'href'=>get_upload_path("/Appapi/Auth/index"));
 		
 
-        $list1[]=array('id'=>'22','name'=>$configpri['shop_system_name'],'thumb'=>get_upload_path("/static/appapi/images/personal/shop.png?t=1") ,'href'=>'' ); //我的小店
+//        $list1[]=array('id'=>'22','name'=>$configpri['shop_system_name'],'thumb'=>get_upload_path("/static/appapi/images/personal/shop.png?t=1") ,'href'=>'' ); //我的小店
         
-        $list1[]=array('id'=>'24','name'=>'付费内容','thumb'=>get_upload_path("/static/appapi/images/personal/pay.png") ,'href'=>'' );
+//        $list1[]=array('id'=>'24','name'=>'付费内容','thumb'=>get_upload_path("/static/appapi/images/personal/pay.png") ,'href'=>'' );
         
         
         $list2[]=array('id'=>'20','name'=>'房间管理','thumb'=>get_upload_path("/static/appapi/images/personal/room.png") ,'href'=>'');
@@ -678,7 +679,10 @@ class Api_User extends PhalApi_Api {
 		$info['wx_appsecret']=$wx_switch==1?$configpri['wx_appsecret']:'';
 		$info['wx_mchid']=$wx_switch==1?$configpri['wx_mchid']:'';
 		$info['wx_key']=$wx_switch==1?$configpri['wx_key']:'';
-		
+
+		$h5_switch = $configpri['h5_switch'];
+        $info['h5_switch']=$h5_switch;
+
         $aliscan_switch=$configpri['aliscan_switch'];
         /* 支付列表 */
         $shelves=1;
@@ -688,6 +692,15 @@ class Api_User extends PhalApi_Api {
 		}
         
         $paylist=[];
+
+        if($h5_switch && $shelves){
+            $paylist[]=[
+                'id'=>'alih5',
+                'name'=>'支付宝H5',
+                'thumb'=>get_upload_path("/static/app/pay/ali.png"),
+                'href'=>'',
+            ];
+        }
         
         if($aliapp_switch && $shelves){
             $paylist[]=[
@@ -1636,7 +1649,7 @@ class Api_User extends PhalApi_Api {
         $domain = new Domain_User();
         $info = $domain->getPerSetting();
 
-        $info[]=array('id'=>'17','name'=>'意见反馈','thumb'=>'' ,'href'=>get_upload_path('/Appapi/feedback/index'));
+//        $info[]=array('id'=>'17','name'=>'意见反馈','thumb'=>'' ,'href'=>get_upload_path('/Appapi/feedback/index'));
         $info[]=array('id'=>'15','name'=>'修改密码','thumb'=>'' ,'href'=>'');
         $info[]=array('id'=>'18','name'=>'清除缓存','thumb'=>'' ,'href'=>'');
         $info[]=array('id'=>'16','name'=>'检查更新','thumb'=>'' ,'href'=>'');

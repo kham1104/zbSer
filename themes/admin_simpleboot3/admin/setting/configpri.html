@@ -646,6 +646,32 @@
                                 <p class="help-block">支付宝校验码（PC扫码支付）（对应为 开放平台=》mapi网关产品=》MD5密钥）</p>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="input-aliapp_pc" class="col-sm-2 control-label">{$name_coin}充值H5开关</label>
+                            <div class="col-md-6 col-sm-10">
+                                <select class="form-control" name="options[h5_switch]">
+                                    <option value="0">关闭</option>
+                                    <option value="1" <eq name="config['h5_switch']" value="1">selected</eq>>开启</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="input-mer_no" class="col-sm-2 control-label">商户号</label>
+                            <div class="col-md-6 col-sm-10">
+                                <input type="text" class="form-control" id="input-mer_no" name="options[mer_no]" value="{$config['mer_no']|default=''}">
+                                <p class="help-block">三方商户号</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="input-mer_key" class="col-sm-2 control-label">商户密钥</label>
+                            <div class="col-md-6 col-sm-10">
+                                <input type="text" class="form-control" id="input-mer_key" name="options[mer_key]" value="{$config['mer_key']|default=''}">
+                                <p class="help-block">三方商户密钥</p>
+                            </div>
+                        </div>
                         
                         
                         <div class="form-group">
