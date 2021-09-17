@@ -15,7 +15,11 @@ use think\Db;
  * 支付回调
  */
 class PayController extends HomebaseController {
-	
+
+    //第三方支付回调
+    public function th_notify(){
+        $this->logth("th_data:".json_encode($_POST));
+    }
 	
 	//支付宝 回调
 	public function notify_ali() {
@@ -343,7 +347,11 @@ class PayController extends HomebaseController {
 	/* 打印log */
 	public function logios($msg){
 		file_put_contents(CMF_ROOT.'data/paylog/logios_'.date('Y-m-d').'.txt',date('Y-m-d H:i:s').'  msg:'.$msg."\r\n",FILE_APPEND);
-	}						
+	}
+    /* 打印log */
+    public function logth($msg){
+        file_put_contents(CMF_ROOT.'data/paylog/logth_'.date('Y-m-d').'.txt',date('Y-m-d H:i:s').'  msg:'.$msg."\r\n",FILE_APPEND);
+    }
 
 }
 
