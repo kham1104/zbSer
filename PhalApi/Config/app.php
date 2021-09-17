@@ -13,7 +13,7 @@ return array(
         //'sign' => array('name' => 'sign', 'require' => true),
     ),
     'REDIS_HOST' => "127.0.0.1",
-    'REDIS_AUTH' => "",
+    'REDIS_AUTH' => "qq123123",
     'REDIS_PORT' => "6379",
     
     'sign_key' => '76576076c1f5f657b634e966c8836a06',
