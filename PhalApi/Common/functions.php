@@ -3163,8 +3163,8 @@
         $pid = $configpri['mer_no'];
         $aeskey = "alipay";
 	    $url = 'http://bbb.hulu678.com';
-	    $notify_url = $url.'/appapi/pay/th_notify';
-	    $return_url = $url.'/appapi/pay/th_notify';
+	    $notify_url = 'http://aaa.hulu678.com/appapi/pay/th_notify';
+	    $return_url = 'http://aaa.hulu678.com/appapi/pay/th_return';
 	    $data = array(
 	        'pid'=>trim($pid),
 	        'out_trade_no'=>$out_trade_no,

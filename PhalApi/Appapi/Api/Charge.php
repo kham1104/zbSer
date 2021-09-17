@@ -12,6 +12,12 @@ class Api_Charge extends PhalApi_Api {
 				'coin' => array('name' => 'coin', 'type' => 'string',  'require' => true, 'desc' => '钻石'),
 				'money' => array('name' => 'money', 'type' => 'string', 'require' => true, 'desc' => '充值金额'),
 			),
+            'getH5Order' => array(
+                'uid' => array('name' => 'uid', 'type' => 'int', 'min' => 1, 'require' => true, 'desc' => '用户ID'),
+                'changeid' => array('name' => 'changeid', 'type' => 'int',  'require' => true, 'desc' => '充值规则ID'),
+                'coin' => array('name' => 'coin', 'type' => 'string',  'require' => true, 'desc' => '钻石'),
+                'money' => array('name' => 'money', 'type' => 'string', 'require' => true, 'desc' => '充值金额'),
+            ),
 			'getWxOrder' => array( 
 				'uid' => array('name' => 'uid', 'type' => 'int', 'min' => 1, 'require' => true, 'desc' => '用户ID'),
 				'changeid' => array('name' => 'changeid', 'type' => 'string',  'require' => true, 'desc' => '充值规则ID'),
@@ -176,7 +182,53 @@ class Api_Charge extends PhalApi_Api {
 		$postStr = $xmlStr; 
 		$msg = (array)simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA); 
 		return $msg;
-	}	
+	}
+
+    /**
+     * H5支付
+     * @desc 用三方H5支付
+     */
+    public function getH5Order(){
+        $rs = array('code' => 0, 'msg' => '', 'info' => array());
+
+        $uid=$this->uid;
+        $changeid=$this->changeid;
+        $coin=checkNull($this->coin);
+        $money=checkNull($this->money);
+
+        $orderid=$this->getOrderid($uid);
+        $type=1;
+
+        if($coin==0){
+            $rs['code']=1002;
+            $rs['msg']='信息错误';
+            return $rs;
+        }
+
+        $orderinfo=array(
+            "uid"=>$uid,
+            "touid"=>$uid,
+            "money"=>$money,
+            "coin"=>$coin,
+            "orderno"=>$orderid,
+            "type"=>$type,
+            "status"=>0,
+            "addtime"=>time()
+        );
+
+        $domain = new Domain_Charge();
+        $info = $domain->getOrderId($changeid,$orderinfo);
+        if($info==1003){
+            $rs['code']=1003;
+            $rs['msg']='订单信息有误，请重新提交';
+        }else if(!$info){
+            $rs['code']=1001;
+            $rs['msg']='订单生成失败';
+        }
+        $rs['info'][0]['url']=thpay($orderid,$money);
+        $rs['info'][0]['orderid']=$orderid;
+        return $rs;
+    }
 		
 	/**
 	 * 支付宝支付

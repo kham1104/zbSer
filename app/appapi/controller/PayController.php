@@ -18,7 +18,50 @@ class PayController extends HomebaseController {
 
     //第三方支付回调
     public function th_notify(){
-        $this->logth("th_data:".json_encode($_POST));
+        $_SERVER['REQUEST_METHOD']=='GET' ? $api = $_GET : $api = $_POST;//判断：GET和POST
+        $this->logth("th_data:".json_encode($api));
+        ksort($api); //排序GET和POST参数
+        reset($api); //内部指针指向数组中的第一个元素
+        $sign = '';//初始化
+        foreach ($api AS $key => $val) { //遍历GET和POST参数
+            if ($val == '' || $key == 'sign' || $key == 'sign_type' || $key == 'param') continue; //跳过这些不签名
+            if ($sign) $sign .= '&'; //第一个字符串签名不加& 其他加&连接起来参数
+            $sign .= "$key=$val"; //拼接为url参数形式
+        }
+        $configpri=getConfigPri();
+        if (md5($sign.$configpri['mer_key'])==$api['sign']) { //不合法的数据
+        //请在这里加上商户的业务逻辑程序代
+        //——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
+            if($api['trade_status']=='TRADE_SUCCESS'){
+                $out_trade_no = $api['out_trade_no'];//商户订单号
+                $type = $api['type'];//支付方式
+
+                $where['orderno']=$out_trade_no;
+                $where['money']=$api['money'];
+                $where['type']=1;
+                $where['status']=0;
+
+                $data=[
+                    'trade_no'=>$api['trade_no']
+                ];
+
+                $res=handelCharge($where,$data);
+                if($res==0){
+                    $this->logali("orderno:".$out_trade_no.' 订单信息不存在或已经支付');
+                    exit("fail");//验证失败
+                }
+
+                exit("success");//请不要修改或删除
+            }else{
+                exit("fail");//验证失败
+            }
+        } else {
+            exit("fail");//验证失败
+        }
+    }
+
+    public function th_return(){
+        echo "充值成功，请返回APP";
     }
 	
 	//支付宝 回调
