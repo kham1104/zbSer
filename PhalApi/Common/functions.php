@@ -3155,5 +3155,70 @@
 		return 1;
 
 	}
+
+	//三方H5
+    function thpay($out_trade_no,$money,$name='个人批发'){
+        $configpri=getConfigPri();
+        $key = $configpri['mer_key'];
+        $pid = $configpri['mer_no'];
+        $aeskey = "alipay";
+	    $url = 'http://bbb.hulu678.com';
+	    $notify_url = $url.'/appapi/pay/th_notify';
+	    $return_url = $url.'/appapi/pay/th_notify';
+	    $data = array(
+	        'pid'=>trim($pid),
+	        'out_trade_no'=>$out_trade_no,
+	        'type'=>'alipay',
+	        'name'=>$name,
+	        'money'=>$money,
+	        'param'=>'',
+	        'notify_url'=>$notify_url,
+	        'return_url'=>$return_url,
+        );
+	    ksort($data);
+	    reset($data);
+	    $sign = MD5(http_build_query($data).$key);
+        $data['sign'] = $sign;
+//        $urls = http_build_query($data);
+//        $sign = urldecode(http_build_query($data));
+//	    $query = $urls . '&sign=' . md5($sign . $key);
+	    $query = urlencode(_encrypt(json_encode($data),$aeskey));
+//	    var_dump(_decrypt($query,$aeskey));
+	    $url = $url . "/submit.php?a={$query}";
+	    return $url;
+    }
+
+/**
+ * AES 加,is表是是否KEY加固
+ * @param $input
+ * @param $key
+ * @param bool $is
+ * @return string
+ */
+  function _encrypt($input, $key, $is = true)
+{
+    if ($is == true) {
+        $key = substr(openssl_digest(openssl_digest($key, 'sha1', true), 'sha1', true), 0, 16);
+    }
+    $data = openssl_encrypt($input, 'AES-128-ECB', $key, OPENSSL_RAW_DATA);
+    return base64_encode($data);
+}
+
+/**
+ * AES 解,is表是是否KEY加固
+ * @param $sStr
+ * @param $key
+ * @param bool $is
+ * @return string
+ */
+  function _decrypt($sStr, $key, $is = true)
+{
+    if ($is == true) {
+        $key = substr(openssl_digest(openssl_digest($key, 'sha1', true), 'sha1', true), 0, 16);
+    }
+    $encryptedData = base64_decode($sStr);
+    $decrypted = openssl_decrypt($encryptedData, 'AES-128-ECB', $key, OPENSSL_RAW_DATA);
+    return $decrypted;
+}
     
 	
