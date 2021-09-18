@@ -42,7 +42,7 @@ return array(
      */
     'UCloud' => array(
         //对应的文件路径
-        'host' => 'http://hjjkdjks.cn/upload'
+        'host' => 'http://aaa.hulu678.com/upload'
     ),
 		
 		/**

@@ -958,25 +958,64 @@ class Api_Video extends PhalApi_Api {
 	}	
 	
 	/**
-     * 获取七牛上传Token
+     * 获取七牛上传Token(本地上传)
      * @desc 用于删除视频以及相关信息
      * @return int code 操作码，0表示成功
      * @return int code 操作码，0表示成功
      * @return string msg 提示信息
      */
 	public function getQiniuToken(){
-	
 	   	$rs = array('code' => 0, 'msg' => '', 'info' =>array());
 
-	   	//获取后台配置的腾讯云存储信息
-		//$configPri=getConfigPri();
-		 
-		//$token = DI()->qiniu->getQiniuToken2($configPri['qiniu_accesskey'],$configPri['qiniu_secretkey'],$configPri['qiniu_bucket']);
-		$token = DI()->qiniu->getQiniuToken();
-		$rs['info'][0]['token']=$token ; 
+        $uptype=DI()->config->get('app.uptype');
+        if($uptype==1){
+            //获取后台配置的腾讯云存储信息
+            //$configPri=getConfigPri();
+            //$token = DI()->qiniu->getQiniuToken2($configPri['qiniu_accesskey'],$configPri['qiniu_secretkey'],$configPri['qiniu_bucket']);
+		    $token = DI()->qiniu->getQiniuToken();
+            $rs['info'][0]['token']=$token;
+        }else if($uptype==2){
+            $rs['info'][0]['token']='';
+        }
+
 		return $rs; 
 		
 	}
+
+    /**
+     * 本地文件上传
+     */
+    public function upfiles(){
+        $rs = array('code' => 0, 'msg' => '', 'info' =>array());
+
+        if (!isset($_FILES['file'])) {
+            $rs['code'] = 1001;
+            $rs['msg'] = T('miss upload file');
+            return $rs;
+        }
+
+        if ($_FILES["file"]["error"] > 0) {
+            $rs['code'] = 1002;
+            $rs['msg'] = T('failed to upload file with error: {error}', array('error' => $_FILES['file']['error']));
+            DI()->logger->debug('failed to upload file with error: ' . $_FILES['file']['error']);
+            return $rs;
+        }
+
+//        var_dump($_FILES['file']);
+
+        DI()->ucloud->set('save_path','dynamic/'.date("Ymd"));
+        //上传表单名
+        $res = DI()->ucloud->upfile($_FILES['file']);
+
+        $data = array(
+            'all'=>$res['url'],
+            'path'=>trim($res['file'],'/'),
+            'host'=>'http://aaa.hulu678.com/upload/',
+        );
+        $rs['info'][0] = $data;
+//        var_dump($rs);
+        return $rs;
+    }
 
     /**
      * 获取推荐视频
