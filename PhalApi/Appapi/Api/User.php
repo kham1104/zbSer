@@ -695,11 +695,35 @@ class Api_User extends PhalApi_Api {
 
         if($h5_switch && $shelves){
             $paylist[]=[
-                'id'=>'alih5',
+                'id'=>'h51',
                 'name'=>'支付宝H5',
                 'thumb'=>get_upload_path("/static/app/pay/ali.png"),
                 'href'=>'',
             ];
+//            $paylist[]=[
+//                'id'=>'h52',
+//                'name'=>'支付宝H5',
+//                'thumb'=>get_upload_path("/static/app/pay/ali.png"),
+//                'href'=>'',
+//            ];
+//            $paylist[]=[
+//                'id'=>'h53',
+//                'name'=>'支付宝H5',
+//                'thumb'=>get_upload_path("/static/app/pay/ali.png"),
+//                'href'=>'',
+//            ];
+//            $paylist[]=[
+//                'id'=>'h54',
+//                'name'=>'支付宝H5',
+//                'thumb'=>get_upload_path("/static/app/pay/ali.png"),
+//                'href'=>'',
+//            ];
+//            $paylist[]=[
+//                'id'=>'h55',
+//                'name'=>'支付宝H5',
+//                'thumb'=>get_upload_path("/static/app/pay/ali.png"),
+//                'href'=>'',
+//            ];
         }
         
         if($aliapp_switch && $shelves){
