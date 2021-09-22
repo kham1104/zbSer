@@ -61,7 +61,12 @@ class AgentController extends HomebaseController {
 			'one_profit'=>number_format($one_profit),
 		);
 
+		$site_info = getConfigPub();
+
+		$fx_word = $site_info['fx_word'];
+
 		$this->assign("uid",$uid);
+		$this->assign("fx_word",$fx_word);
 		$this->assign("token",$token);
 		$this->assign("userinfo",$userinfo);
 		$this->assign("agentinfo",$agentinfo);

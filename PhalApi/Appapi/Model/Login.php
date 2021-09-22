@@ -138,7 +138,7 @@ class Model_Login extends PhalApi_Model_NotORM {
             $insert=array("type"=>'1',"action"=>'11',"uid"=>$uid,"touid"=>$uid,"giftid"=>0,"giftcount"=>1,"totalcoin"=>$reg_reward,"showid"=>0,"addtime"=>time() );
             DI()->notorm->user_coinrecord->insert($insert);
         }
-		$code=$this->createCode();
+		$code=$this->createCode(6,'NUMBER');
 		$code_info=array('uid'=>$uid,'code'=>$code);
 		$isexist=DI()->notorm->agent_code
 					->select("*")
