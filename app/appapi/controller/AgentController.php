@@ -63,7 +63,7 @@ class AgentController extends HomebaseController {
 
 		$site_info = getConfigPub();
 
-		$fx_word = $site_info['fx_word'];
+		$fx_word = $site_info['fx_word'].' '.$site_info['fx_url'].'?code='.$code;
 
 		$this->assign("uid",$uid);
 		$this->assign("fx_word",$fx_word);
@@ -183,6 +183,9 @@ class AgentController extends HomebaseController {
 			'addtime'=>time(),
 		);
 		Db::name('agent')->insert($data);
+
+		//发放奖励
+        Db::name('user')->where('id',$uid)->setInc('coin',200);
 
 		echo json_encode($rs);
 		exit;

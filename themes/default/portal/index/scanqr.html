@@ -1,11 +1,42 @@
 ﻿<!DOCTYPE html>
 <html>
- <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <head>
+	 <include file="appapi@head"/>
+	 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta charset="UTF-8">
 	<title>APP下载</title>
+	 <link href='__STATIC__/appapi/css/agent.css?t=1561712925' rel="stylesheet" type="text/css" >
 </head>
 <body class="max-wide">
+<div class="home">
+	<div class="top_bg">
+		<img src="__STATIC__/appapi/images/agent/agent_bg.png">
+	</div>
+	<div class="top_code">
+		<div class="mycode_title">
+			注册成功请输入邀请码
+		</div>
+		<div class="mycode" style="font-size: 0.8rem;color:#33bbee">
+                <span class="code">
+                    {$code}
+                </span>
+		</div>
+	</div>
+	<div style="width: 100%;margin-bottom:0.6rem;">
+		<a href="{$site_info['app_android']}">
+		<div style="height:0.8rem;line-height:0.8rem;width: 60%;margin:0 auto;text-align:center;background:#33bbee;color:#fff;border-radius: 6px;">安卓下载</div>
+		</a>
+	</div>
+	<div class="tips">
+		请用浏览器打开,再下载<br>
+		邀请须知：<br>
+		填写邀请码，送200钻石
+	</div>
+</div>
+<include file="appapi@footer"/>
+<script src="__STATIC__/appapi/js/agent.js"></script>
+
 
 	<script type="text/javascript">
 	        function browserRedirect() {
@@ -31,12 +62,12 @@
 	            }else if(bIsWM){
 	               // document.writeln("wp");
 	            }else{
-	               // document.writeln("pc");
+	                // document.writeln("pc");
                    window.location.href='/';
 	            }
 	        }
 
-	        browserRedirect();
+	        // browserRedirect();
 	    </script>
 
 <!--Exec Time:0.0019 -->

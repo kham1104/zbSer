@@ -22,6 +22,8 @@ class IndexController extends HomeBaseController
     }
     
     public function scanqr() {
+        $code = empty($_REQUEST['code'])?'':$_REQUEST['code'];
+        $this->assign('code',$code);
     	return $this->fetch();
     }
 
