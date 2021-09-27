@@ -190,7 +190,7 @@ io.on('connection', function(socket) {
             //console.log(data);
 		    if(socket.token != undefined){
 		    	var dataObj  = typeof data == 'object'?data:evalJson(data);
-			    var msg      = dataObj['msg'][0]; 
+			    var msg      = dataObj['msg'][0];
 			    var token    = dataObj['token'];
 				var method   = msg['_method_'];
 			    var action   = msg['action'];
@@ -503,7 +503,7 @@ io.on('connection', function(socket) {
                             /* 更新数据库 */
                             var sign_data={uid:socket.uid,pkuid:pkuid,type:1};
                             var sign=setSign(sign_data);
-                            request(config['WEBADDRESS']+"?service=Livepk.changeLive&uid="+socket.uid + "&pkuid=" + pkuid+ "&type=1&sign=" +sign,function(error, response, body){
+                            request(config['WEBADDRESS']+"?jmreq=no&service=Livepk.changeLive&uid="+socket.uid + "&pkuid=" + pkuid+ "&type=1&sign=" +sign,function(error, response, body){
                                 // console.log('changeLive');
                                 // console.log(body);
                             });
@@ -582,7 +582,7 @@ io.on('connection', function(socket) {
                             // console.log(socket.uid+'---'+pkuid);
                             var sign_data={uid:socket.uid,pkuid:pkuid};
                             var sign=setSign(sign_data);
-                            request(config['WEBADDRESS']+"?service=Livepk.setPK&uid="+socket.uid + "&pkuid=" + pkuid+ "&sign=" +sign,function(error, response, body){
+                            request(config['WEBADDRESS']+"?jmreq=no&service=Livepk.setPK&uid="+socket.uid + "&pkuid=" + pkuid+ "&sign=" +sign,function(error, response, body){
                                 if(error) return;
                                 // console.log('setPK');
                                 // console.log(body);
@@ -666,7 +666,7 @@ io.on('connection', function(socket) {
 							var time=msg['time']*1000;
 							var gameid=msg['gameid'];
 							setTimeout(function() {//定时发送结果
-                                request(config['WEBADDRESS']+"?service=Game.endGame&liveuid="+socket.uid + "&token=" + socket.token+ "&gameid=" + gameid+"&type=1",function(error, response, body){
+                                request(config['WEBADDRESS']+"?jmreq=no&service=Game.endGame&liveuid="+socket.uid + "&token=" + socket.token+ "&gameid=" + gameid+"&type=1",function(error, response, body){
                                     if(error) return;
                                     var res = evalJson(body);
                                     if( response.statusCode == 200 && res.data.code == 0){
@@ -689,7 +689,7 @@ io.on('connection', function(socket) {
 							var time=msg['time']*1000;
 							var gameid=msg['gameid'];
 							setTimeout(function() {//定时发送结果
-                                request(config['WEBADDRESS']+"?service=Game.endGame&liveuid="+socket.uid + "&token=" + socket.token+ "&gameid=" + gameid+"&type=1",function(error, response, body){
+                                request(config['WEBADDRESS']+"?jmreq=no&service=Game.endGame&liveuid="+socket.uid + "&token=" + socket.token+ "&gameid=" + gameid+"&type=1",function(error, response, body){
                                     if(error) return;
                                     ////console.log(body);
                                     var res = evalJson(body);
@@ -714,7 +714,7 @@ io.on('connection', function(socket) {
 							var time=msg['time']*1000;
 							var gameid=msg['gameid'];
 							setTimeout(function() {//定时发送结果
-                                request(config['WEBADDRESS']+"?service=Game.endGame&liveuid="+socket.uid + "&token=" + socket.token+ "&gameid=" + gameid+"&type=1",function(error, response, body){
+                                request(config['WEBADDRESS']+"?jmreq=no&service=Game.endGame&liveuid="+socket.uid + "&token=" + socket.token+ "&gameid=" + gameid+"&type=1",function(error, response, body){
                                     if(error) return;
                                     var res = evalJson(body);
 
@@ -738,7 +738,7 @@ io.on('connection', function(socket) {
 							var time=msg['time']*1000;
 							var gameid=msg['gameid'];
 							setTimeout(function() {//定时发送结果
-                                request(config['WEBADDRESS']+"?service=Game.endGame&liveuid="+socket.uid + "&token=" + socket.token+ "&gameid=" + gameid+"&type=1",function(error, response, body){
+                                request(config['WEBADDRESS']+"?jmreq=no&service=Game.endGame&liveuid="+socket.uid + "&token=" + socket.token+ "&gameid=" + gameid+"&type=1",function(error, response, body){
                                     if(error) return;
                                     var res = evalJson(body);
                                     
@@ -762,7 +762,7 @@ io.on('connection', function(socket) {
 							var time=msg['time']*1000;
 							var gameid=msg['gameid'];
 							setTimeout(function() {//定时发送结果
-                                request(config['WEBADDRESS']+"?service=Game.endGame&liveuid="+socket.uid + "&token=" + socket.token+ "&gameid=" + gameid+"&type=1",function(error, response, body){
+                                request(config['WEBADDRESS']+"?jmreq=no&service=Game.endGame&liveuid="+socket.uid + "&token=" + socket.token+ "&gameid=" + gameid+"&type=1",function(error, response, body){
                                     if(error) return;
                                     var res = evalJson(body);
                                     if( response.statusCode == 200 && res.data.code == 0){
@@ -779,7 +779,7 @@ io.on('connection', function(socket) {
 						break;
 					}
 			    	case 'requestFans':{
-							request(config['WEBADDRESS']+"?service=Live.getZombie&stream=" + socket.stream+"&uid=" + socket.uid,function(error, response, body){
+							request(config['WEBADDRESS']+"?jmreq=no&service=Live.getZombie&stream=" + socket.stream+"&uid=" + socket.uid,function(error, response, body){
 								if(error) return;
 								var res = evalJson(body);
 								if( response.statusCode == 200 && res.data.code == 0){
@@ -867,7 +867,7 @@ io.on('connection', function(socket) {
 				if(socket.roomnum==socket.uid){
 					/* 主播 */ 
 					if(socket.reusing==0){
-						request(config['WEBADDRESS']+"?service=Live.stopRoom&uid="+socket.uid + "&token=" + socket.token+ "&type=1&stream=" + socket.stream,function(error, response, body){
+						request(config['WEBADDRESS']+"?jmreq=no&service=Live.stopRoom&uid="+socket.uid + "&token=" + socket.token+ "&type=1&stream=" + socket.stream,function(error, response, body){
                             var data_obj={
                                         "retmsg":"ok",
                                         "retcode":"000000",
@@ -987,13 +987,15 @@ function endLiveConnect(io,uid){
         }
         var pkuid=res;
          console.log('pkuid---'+pkuid);
+         console.log(config['WEBADDRESS']);
         /* 更新数据库 */
         var sign_data={uid:uid,pkuid:pkuid,type:0};
         var sign=setSign(sign_data);
-        request(config['WEBADDRESS']+"?service=Livepk.changeLive&uid="+uid + "&pkuid=" + pkuid+ "&type=0&sign=" +sign,function(error, response, body){
+        request(config['WEBADDRESS']+"?jmreq=no&service=Livepk.changeLive&uid="+uid + "&pkuid=" + pkuid+ "&type=0&sign=" +sign,function(error, response, body){
             if(error) return;
              console.log('changeLive');
-             console.log(body);
+             console.log('111111111');
+             console.log(JSON.stringify(body));
             var res = evalJson(body);
             if( response.statusCode == 200 && res.data.code == 0){
                 var data_obj={
@@ -1028,7 +1030,7 @@ function endLivePk(io,uid,type,addtime){
     // console.log('type-'+type);
     var sign_data={uid:uid,addtime:addtime,type:type};
     var sign=setSign(sign_data);
-    request(config['WEBADDRESS']+"?service=Livepk.endPK&uid="+uid + "&addtime=" + addtime+ "&type=" + type+ "&sign=" +sign,function(error, response, body){
+    request(config['WEBADDRESS']+"?jmreq=no&service=Livepk.endPK&uid="+uid + "&addtime=" + addtime+ "&type=" + type+ "&sign=" +sign,function(error, response, body){
         if(error) return;
         // console.log('endPK');
         // console.log(body);

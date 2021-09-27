@@ -53,6 +53,7 @@ class Api_Live extends PhalApi_Api {
 				'token' => array('name' => 'token', 'type' => 'string', 'require' => true, 'desc' => '用户token'),
 				'liveuid' => array('name' => 'liveuid', 'type' => 'int', 'min' => 1, 'require' => true, 'desc' => '主播ID'),
 				'stream' => array('name' => 'stream', 'type' => 'string', 'require' => true, 'desc' => '流名'),
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
 			),
 			
 			'roomCharge' => array(
@@ -86,6 +87,7 @@ class Api_Live extends PhalApi_Api {
 			'getZombie' => array(
                 'uid' => array('name' => 'uid', 'type' => 'int', 'min' => 1, 'require' => true, 'desc' => '用户ID'),
 				'stream' => array('name' => 'stream', 'type' => 'string', 'min' => 1, 'require' => true, 'desc' => '流名'),
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
             ),
 
 			'getUserLists' => array(
@@ -167,6 +169,7 @@ class Api_Live extends PhalApi_Api {
                 'token' => array('name' => 'token', 'require' => true, 'min' => 1, 'desc' => '会员token'),
                 'liveuid' => array('name' => 'liveuid', 'type' => 'int', 'min' => 1, 'require' => true, 'desc' => '主播ID'),
 				'type' => array('name' => 'type', 'type' => 'int','default'=>0, 'desc' => '关播类型 0表示关闭当前直播 1表示禁播，2表示封禁账号'),
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
             ),
 			'searchMusic' => array(
 				'key' => array('name' => 'key', 'type' => 'string','require' => true,'desc' => '关键词'),
@@ -185,13 +188,25 @@ class Api_Live extends PhalApi_Api {
             'checkLiveing' => array(
 				'uid' => array('name' => 'uid', 'type' => 'int','desc' => '会员ID'),
                 'stream' => array('name' => 'stream', 'type' => 'string','desc' => '流名'),
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
             ),
 
             'getLiveInfo' => array(
 				'liveuid' => array('name' => 'liveuid', 'type' => 'int', 'desc' => '主播ID'),
             ),
+            'test'  => array(
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
+            ),
 		);
 	}
+
+	public function test(){
+        $rs = array('code' => 0, 'msg' => '', 'info' => array());
+	    $jmreq = $this->jmreq;
+        $rs['jmreq'] = $jmreq;
+//	    var_dump($jmreq);
+	    return $rs;
+    }
 
     /**
 	 * 获取SDK
@@ -699,6 +714,9 @@ class Api_Live extends PhalApi_Api {
 	 */
 	public function stopRoom() { 
 		$rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
 
         file_put_contents(API_ROOT.'/Runtime/stopRoom_'.date('Y-m-d').'.txt',date('Y-m-d H:i:s').' 提交参数信息 开始:'."\r\n",FILE_APPEND);
         file_put_contents(API_ROOT.'/Runtime/stopRoom_'.date('Y-m-d').'.txt',date('Y-m-d H:i:s').' 提交参数信息 _REQUEST:'.json_encode($_REQUEST)."\r\n",FILE_APPEND);
@@ -744,6 +762,9 @@ class Api_Live extends PhalApi_Api {
 	 */
 	public function stopInfo() {
 		$rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
 		
 		$stream=checkNull($this->stream);
 		
@@ -766,6 +787,9 @@ class Api_Live extends PhalApi_Api {
 	 */
 	public function checkLive() {
 		$rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
 		
 		$uid=$this->uid;
 		$token=checkNull($this->token);
@@ -841,6 +865,9 @@ class Api_Live extends PhalApi_Api {
 	 */
 	public function roomCharge() { 
 		$rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
 		
 		$uid=$this->uid;
 		$token=checkNull($this->token);
@@ -889,6 +916,9 @@ class Api_Live extends PhalApi_Api {
 	 */
 	public function timeCharge() { 
 		$rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
 		
 		$uid=$this->uid;
 		$token=checkNull($this->token);
@@ -987,6 +1017,9 @@ class Api_Live extends PhalApi_Api {
 	 */
 	public function enterRoom() {
 		$rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
 		
 		$uid=$this->uid;
 		$token=checkNull($this->token);
@@ -1279,6 +1312,9 @@ class Api_Live extends PhalApi_Api {
 		 
     public function getZombie() {
         $rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
 		
 		$uid=$this->uid;
 		$stream=checkNull($this->stream);

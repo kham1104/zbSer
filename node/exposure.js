@@ -1,4 +1,4 @@
-var site='http://mmm.mxhudong.com';
+var site='http://aaa.hulu678.com';
 var schedule = require("node-schedule");
 var request  = require('request');
 
@@ -39,7 +39,7 @@ var j = schedule.scheduleJob(rule, function(){
 function changeShopOrder(lastid){
     // var time=FormatNowDate();
     // console.log("执行任务setVal"+lastid+'--'+time);
-    request(site+"/Appapi/Shoporder/checkOrder?lastid="+lastid,function(error, response, body){
+    request(site+"/Appapi/Shoporder/checkOrder?jmreq=no&lastid="+lastid,function(error, response, body){
         //console.log(error);
         if(error) return;
         if(!body) return;
@@ -83,7 +83,7 @@ var j2 = schedule.scheduleJob(rule2, function(){
 function uplive(){
     // var time=FormatNowDate();
     // console.log("执行任务setVal"+lastid+'--'+time);
-    request(site+"/appapi/liveback/uplive",function(error, response, body){
+    request(site+"/appapi/liveback/uplive?jmreq=no",function(error, response, body){
         //console.log(error);
         if(error) return;
         if(!body) return;

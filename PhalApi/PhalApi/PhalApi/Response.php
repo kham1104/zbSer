@@ -213,10 +213,14 @@ yUw72G8ecg0K1mZhtwIDAQAB";
     	$this->handleHeaders($this->headers);
 
         $rs = $this->getResult();
-
-        $rs = $this->formatResult($rs);
-        //私钥加密
-        $rs = self::sslEn($rs);
+//        var_dump($rs);
+        if(empty($rs['data']['jmreq'])){
+            $rs = $this->formatResult($rs);
+            //私钥加密
+            $rs = self::sslEn($rs);
+        }else{
+            $rs = $this->formatResult($rs);
+        }
 
     	echo $rs;
     }

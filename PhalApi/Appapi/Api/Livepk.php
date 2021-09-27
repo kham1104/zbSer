@@ -18,6 +18,7 @@ class Api_Livepk extends PhalApi_Api {
 			'checkLive' => array(
 				'stream' => array('name' => 'stream', 'type' => 'string', 'require' => true, 'desc' => '连麦主播流名'),
                 'uid_stream' => array('name' => 'uid_stream', 'type' => 'string', 'require' => true, 'desc' => '当前主播流名'),
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
 			),
             
             'changeLive' => array(
@@ -25,12 +26,14 @@ class Api_Livepk extends PhalApi_Api {
 				'pkuid' => array('name' => 'pkuid', 'type' => 'int', 'require' => true, 'desc' => '连麦主播ID'),
 				'type' => array('name' => 'type', 'type' => 'int', 'require' => true, 'desc' => '标识'),
 				'sign' => array('name' => 'sign', 'type' => 'string', 'require' => true, 'desc' => '签名'),
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
 			),
             
             'setPK' => array(
                 'uid' => array('name' => 'uid', 'type' => 'int', 'desc' => '用户ID'),
 				'pkuid' => array('name' => 'pkuid', 'type' => 'int', 'desc' => '连麦主播ID'),
 				'sign' => array('name' => 'sign', 'type' => 'string', 'desc' => '签名'),
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
 			),
             
             'endPK' => array(
@@ -38,6 +41,7 @@ class Api_Livepk extends PhalApi_Api {
 				'addtime' => array('name' => 'addtime', 'type' => 'int', 'desc' => '时间戳'),
 				'type' => array('name' => 'type', 'type' => 'int', 'desc' => '标识'),
 				'sign' => array('name' => 'sign', 'type' => 'string','desc' => '签名'),
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
 			),
 		);
 	}
@@ -140,6 +144,9 @@ class Api_Livepk extends PhalApi_Api {
 	 */
 	public function checkLive() {
 		$rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
         
         $stream=checkNull($this->stream);
         $uid_stream=checkNull($this->uid_stream);
@@ -203,6 +210,9 @@ class Api_Livepk extends PhalApi_Api {
 	 */
 	public function changeLive() {
 		$rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
         
         $uid = $this->uid;
 		$pkuid=checkNull($this->pkuid);
@@ -269,6 +279,9 @@ class Api_Livepk extends PhalApi_Api {
 	 */
 	public function setPK() {
 		$rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
         
         $uid = $this->uid;
 		$pkuid=checkNull($this->pkuid);
@@ -316,7 +329,9 @@ class Api_Livepk extends PhalApi_Api {
 	 */
 	public function endPK() {
 		$rs = array('code' => 0, 'msg' => '', 'info' => array());
-        
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
         
         
         $uid = $this->uid;
