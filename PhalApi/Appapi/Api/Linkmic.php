@@ -230,7 +230,7 @@ class Api_Linkmic extends PhalApi_Api {
 		
 
 		$t=time()+60;
-		$sign=$md5_val = md5($call_back_key . strval($t));;
+		$sign=$md5_val = md5($call_back_key . strval($t));
 
 		$param=$mergeparams;
 
