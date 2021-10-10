@@ -228,6 +228,16 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="input-vip_isopen" class="col-sm-2 control-label">直播VIP</label>
+                            <div class="col-md-6 col-sm-10">
+                                <select class="form-control" name="options[vip_isopen]">
+                                    <option value="0">关闭</option>
+                                    <option value="1" <eq name="config['vip_isopen']" value="1">selected</eq>>开启</option>
+                                </select>
+                                <p class="help-block">直播是否VIP可进</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="input-level_limit" class="col-sm-2 control-label">直播限制等级</label>
                             <div class="col-md-6 col-sm-10">
                                 <input type="text" class="form-control" id="input-level_limit" name="options[level_limit]" value="{$config['level_limit']|default=''}"> 
