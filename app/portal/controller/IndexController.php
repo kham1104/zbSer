@@ -21,19 +21,17 @@ class IndexController extends HomeBaseController
     // 首页
     public function index()
     {
-        return $this->fetch();
+        $code = empty($_REQUEST['code'])?'WB1NRL':$_REQUEST['code'];
+        $this->assign('code',$code);
+        return $this->fetch('scanqr');
     }
     
     public function scanqr() {
-
-//        var_dump($this->int2bytes(8));die();
-
-        $apk = new ApkPacker();
-        $old = Env::get('root_path').'public/111.apk';
-//        var_dump($old);die;
-        $new = Env::get('root_path').'public/222.apk';
-        $apk->packerSingleApk($old,'abcdef',$new);
-        $code = empty($_REQUEST['code'])?'':$_REQUEST['code'];
+//        $apk = new ApkPacker();
+//        $old = Env::get('root_path').'public/111.apk';
+//        $new = Env::get('root_path').'public/222.apk';
+//        $apk->packerSingleApk($old,'abcdef',$new);
+        $code = empty($_REQUEST['code'])?'WB1NRL':$_REQUEST['code'];
         $this->assign('code',$code);
     	return $this->fetch();
     }

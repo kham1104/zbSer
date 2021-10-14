@@ -75,6 +75,7 @@ class Api_Live extends PhalApi_Api {
 				'liveuid' => array('name' => 'liveuid', 'type' => 'int', 'min' => 1, 'require' => true, 'desc' => '主播ID'),
 				'stream' => array('name' => 'stream', 'type' => 'string', 'require' => true, 'desc' => '流名'),
 				'city' => array('name' => 'city', 'type' => 'string','default'=>'', 'desc' => '城市'),
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
 			),
 			
 			'showVideo' => array(
@@ -205,7 +206,11 @@ class Api_Live extends PhalApi_Api {
 	    $jmreq = $this->jmreq;
         $rs['jmreq'] = $jmreq;
 //	    var_dump($jmreq);
-	    return $rs;
+        $a = '{"eventId":1632886914,"interface":{"interfaceName":"Mix_StreamV2","para":{"app_id":"1400575095","input_stream_list":[{"input_stream_id":"canvas1","layout_params":{"image_layer":1,"input_type":3}},{"input_stream_id":"10041_1632886410","layout_params":{"image_height":0.5,"image_layer":2,"image_width":0.5,"location_x":0,"location_y":0.25}},{"input_stream_id":"10042_1632886209","layout_params":{"image_height":0.5,"image_layer":3,"image_width":0.5,"location_x":0.5,"location_y":0.25}}],"interface":"mix_streamv2.start_mix_stream_advanced","mix_stream_session_id":"10041_1632886410","output_stream_id":"10041_1632886410"}},"timestamp":1632886914}';
+//	    dump(json_decode($a,true));
+//        return json_decode($a,true);
+        $rs['jg'] = json_decode($a,true);
+        return $rs;
     }
 
     /**
@@ -846,11 +851,32 @@ class Api_Live extends PhalApi_Api {
         
         
         $configpri=getConfigPri();
+
+        $userinfo=getUserInfo($uid);
+
+        if($configpri['vip_isopen']==1){
+            if($userinfo['vip']['type']==0){
+                $userinfo['is_vip_open'] = 0;
+            }else{
+                $userinfo['is_vip_open'] = 1;
+            }
+            $userinfo['is_vip_day'] = $configpub['fx_vip'];
+            $userinfo['vip_desc'] = '';
+            if($configpub['fx_vip']==0){
+                $userinfo['vip_desc'] = "VIP用户可以进入，请前往开通VIP";
+            }else{
+                $userinfo['vip_desc'] = "VIP用户可以进入，请前往开通VIP或者通过分享用户得到VIP";
+            }
+        }else{
+            $userinfo['is_vip_open'] = 1;
+        }
+        $userinfo['cz_vip_url'] = get_upload_path("/Appapi/Mall/index").'?uid='.$uid.'&token='.$token;
+        $userinfo['share_url'] = get_upload_path("/Appapi/Agent/index").'?uid='.$uid.'&token='.$token;
         
         $info['live_sdk']=$configpri['live_sdk'];
         
 		$rs['info'][0]=$info;
-		
+		$rs['info'][0]['vip']=$userinfo;
 		
 		return $rs;
 	}
