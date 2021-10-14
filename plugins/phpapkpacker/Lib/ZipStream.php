@@ -53,11 +53,11 @@ class ZipStream {
 	 */
 	public function open( $apkFile ) {
 		$this->apkFile    = $apkFile;
-        dump($this->apkFile);
+//        dump($this->apkFile);
 		$this->fileHandle = fopen( $this->apkFile, 'r+b' );
-        dump($this->fileHandle);
+//        dump($this->fileHandle);
 		$this->fileInfo   = fstat( $this->fileHandle );
-        dump($this->fileInfo);
+//        dump($this->fileInfo);
 	}
 
 	/**

@@ -48,7 +48,7 @@ class ApkPacker {
 		}
 
 		$apkFileInfo = fstat( $apkFileHandle );
-		var_dump( $apkFileInfo );
+//		var_dump( $apkFileInfo );
 		$apkFileSize = isset( $apkFileInfo['size'] ) ? $apkFileInfo['size'] : 0;
 		if ( $apkFileSize == 0 ) {
 			throw new ApkPackerException( 'apk file size error' );
