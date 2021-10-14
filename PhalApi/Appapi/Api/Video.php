@@ -976,6 +976,8 @@ class Api_Video extends PhalApi_Api {
             $rs['info'][0]['token']=$token;
         }else if($uptype==2){
             $rs['info'][0]['token']='';
+            $rs['info'][0]['domain'] = DI()->config->get('app.UCloud.domain');
+            $rs['info'][0]['uptype'] = DI()->config->get('app.uptype');
         }
 
 		return $rs; 
@@ -1010,7 +1012,8 @@ class Api_Video extends PhalApi_Api {
         $data = array(
             'all'=>$res['url'],
             'path'=>trim($res['file'],'/'),
-            'host'=>'http://aaa.hulu678.com/upload/',
+//            'host'=>'http://ccc.hulu678.com/upload/',
+            'host'=>DI()->config->get('app.UCloud.host')
         );
         $rs['info'][0] = $data;
 //        var_dump($rs);

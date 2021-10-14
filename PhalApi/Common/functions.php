@@ -401,6 +401,32 @@
 			return html_entity_decode($filepath);
 		}
 	}
+
+/**
+ * 转化数据库保存的文件路径，为可以访问的url(使用动态上)
+ */
+function get_upload_path_dy($file){
+    if($file==''){
+        return $file;
+    }
+    if(strpos($file,"http")===0){
+        return html_entity_decode($file);
+    }else if(strpos($file,"/")===0){
+        $filepath= get_host().$file;
+        return html_entity_decode($filepath);
+    }else{
+        $uptype=DI()->config->get('app.uptype');
+        if($uptype==1){
+            $space_host= DI()->config->get('app.Qiniu.space_host');
+            $filepath=$space_host."/".$file;
+        }else{
+            $space_host= DI()->config->get('app.UCloud.host');
+            $filepath= $space_host."/".$file;
+        }
+
+        return html_entity_decode($filepath);
+    }
+}
 	
 	/* 判断是否关注 */
 	function isAttention($uid,$touid) {
@@ -1837,7 +1863,7 @@
 					$thumbs=explode(";",$v['thumb']);
 					foreach($thumbs as $kk=>$vv){
 					
-						$thumbs[$kk]=get_upload_path($vv);
+						$thumbs[$kk]=get_upload_path_dy($vv);
 					}
 					$v['thumbs']=$thumbs;
 				}else{
@@ -1845,14 +1871,14 @@
 				}
 				
 				if($v['video_thumb']){
-					$v['video_thumb']=get_upload_path($v['video_thumb']);
+					$v['video_thumb']=get_upload_path_dy($v['video_thumb']);
 				}
 			   
 				if($v['voice']){
-					$v['voice']=get_upload_path($v['voice']);
+					$v['voice']=get_upload_path_dy($v['voice']);
 				}
 				if($v['href']){
-					$v['href']=get_upload_path($v['href']);
+					$v['href']=get_upload_path_dy($v['href']);
 				}
 				
 				$v['likes']=NumberFormat($v['likes']);

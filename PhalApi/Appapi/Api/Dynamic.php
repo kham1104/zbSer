@@ -114,7 +114,9 @@ class Api_Dynamic extends PhalApi_Api {
             	'p' => array('name' => 'p', 'type' => 'int', 'min' => 1, 'default'=>1, 'desc' => '页数'),
             ),
 
-            
+            'GetQiniuToken'=>array(
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string',  'desc' => ''),
+            ),
 		);
 	}
 	
@@ -785,13 +787,18 @@ class Api_Dynamic extends PhalApi_Api {
 	public function getQiniuToken(){
 	
 	   	$rs = array('code' => 0, 'msg' => '', 'info' =>array());
-
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = 'no';
+        }
 	   	//获取后台配置的腾讯云存储信息
 		//$configPri=getConfigPri();
 		//$token = DI()->qiniu->getQiniuToken2($configPri['qiniu_accesskey'],$configPri['qiniu_secretkey'],$configPri['qiniu_bucket']);
 		$token = DI()->qiniu->getQiniuToken();
-		$rs['info'][0]['token']=$token ; 
-		return $rs; 
+		$rs['info'][0]['token']=$token ;
+
+        $rs['info'][0]['domain'] = DI()->config->get('app.UCloud.domain');
+        $rs['info'][0]['uptype'] = DI()->config->get('app.uptype');
+		return $rs;
 		
 	}
    

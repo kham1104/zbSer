@@ -32,7 +32,7 @@
             <ul>
                 <li>
                     <div class="v_t">尊贵身份</div>
-                    <div class="v_d">携带VIP标识登场</div>
+                    <div class="v_d">开通VIP可进入直播间</div>
                 </li>
                 <li>
                     <div class="v_t">炫酷标识</div>
@@ -40,64 +40,50 @@
                 </li>
             </ul>
         </div>
-        <div class="vip_button button_default">
-            {$vip_txt}会员
-        </div>
+
         <div class="vip_end <if condition="!$uservip">hide</if>">
             当前VIP到期时间：<span id="vip_endtime">{$uservip['endtime']}</span>
         </div>
-        
-        <div class="vip_buy_body hide">
-            <div class="vip_buy_list">
-                <div class="vip_buy_list_t">开通账号</div>
-                <div class="vip_buy_list_b">{$user['user_nicename']} ({$user['id']})</div>
-            </div>
-            <div class="vip_buy_list hide">
-                <div class="vip_buy_list_t">会员类型</div>
-                <div class="vip_buy_list_b">
-                    <ul>
-                        <li class="on">VIP会员</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="vip_buy_list">
-                <div class="vip_buy_list_t vip_length_t">{$vip_txt}时长</div>
-                <div class="vip_buy_list_b vip_length">
-                    <ul>
-                        <volist name="vip_list" id="v">
-                        <li <if condition="$i eq '1'">class="on"</if> data-id="{$v['id']}" data-coin="{$v['coin']}" data-score="{$v['score']}" data-length="{$long[$v['length']]}">
-                            {$long[$v['length']]}
+<!--        充值-->
+    <div class="vip_buy_body">
+        <div class="vip_buy_list">
+            <div class="vip_buy_list_t1 vip_length_t">支付方式</div>
+            <div class="vip_buy_list_b1 vip_paytype">
+                <ul class="paylist">
+                    <volist name="paylist" id="v">
+                        <li <if condition="$i eq '1'">class="on"</if> data-id="{$v['id']}">
+                        {$v['name']}
                         </li>
+                    </volist>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+        <div class="vip_buy_body">
+            <div class="vip_buy_list">
+
+                <div class="vip_buy_list_t vip_length_t">{$vip_txt}时长</div>
+                <div class="vip_buy_list_b vip_pay">
+                    <ul class="pay">
+                        <volist name="vip_list" id="v">
+                            <li <if condition="$i eq '1'">class="on"</if> data-id="{$v['id']}" data-coin="{$v['coin']}" data-score="{$v['score']}" data-length="{$long[$v['length']]}">
+                            {$long[$v['length']]}<br>
+                            {$v['score']}元<br>
+                            送{$v['coin']}{$site_info['name_coin']}
+                            </li>
                         </volist>
                     </ul>
                 </div>
             </div>
-            <div class="vip_buy_list">
-                <div class="vip_buy_list_t">开通花费</div>
-                <div class="vip_buy_list_b">
-                    <!-- <img src="__STATIC__/appapi/images/coin.png" class="coin"> -->
-                    <span id="vip_total_coin">{$vip_list[0]['coin']}{$site_info['name_coin']}/{$vip_list[0]['score']}{$site_info['name_score']}</span>
-                </div>
-            </div>
-            
-            <div class="vip_buy_list vip_user">
-                <div class="vip_buy_list_t">我的钱包</div>
-                <div class="vip_buy_list_b">
-                    <!-- <img src="__STATIC__/appapi/images/coin.png" class="coin"> -->
-                    <span id="user_coin">{$user['coin']}{$site_info['name_coin']}/{$user['score']}{$site_info['name_score']}</span>
-                </div>
-            </div>
-            
-            <div class="vip_buy_list vip_submit_bd">
-                <div class="vip_submit_bd_b vip_submit_bd_l button_default" data-type='0'>
-                    {$site_info['name_coin']}{$vip_txt}
-                </div>
-                <div class="vip_submit_bd_b vip_submit_bd_r" data-type='1'>
-                    {$site_info['name_score']}兑换
-                </div>
-            </div>
+
         </div>
+    <div class="vip_button_pay button_default">
+        {$vip_txt}会员
     </div>
+
+    </div>
+
     <div class="tab_bd liang hide">
         <div class="bd_title">
             <span class="bd_title_line">——</span>
@@ -115,9 +101,9 @@
                         <div class="liang_buy_b liang_buy_l" data-type='0'>
                             {$site_info['name_coin']}购买
                         </div>
-                        <div class="liang_buy_b liang_buy_r" data-type='1'>
-                            {$site_info['name_score']}兑换
-                        </div>
+<!--                        <div class="liang_buy_b liang_buy_r" data-type='1'>-->
+<!--                            {$site_info['name_score']}兑换-->
+<!--                        </div>-->
                     </div>
                 </li>
                 </volist>
@@ -145,9 +131,9 @@
                         <div class="car_buy_b car_buy_l" data-type='0'>
                             {$site_info['name_coin']}购买
                         </div>
-                        <div class="car_buy_b car_buy_r" data-type='1'>
-                            {$site_info['name_score']}兑换
-                        </div>
+<!--                        <div class="car_buy_b car_buy_r" data-type='1'>-->
+<!--                            {$site_info['name_score']}兑换-->
+<!--                        </div>-->
                     </div>
                 </li>
                 </volist>
@@ -162,5 +148,55 @@
     var name_score='{$site_info['name_score']}';
 </script>
 <script src="__STATIC__/appapi/js/mall.js?t=1578620089"></script>
+
+    <script>
+        $(function (){
+            $(".vip_button_pay").on("click",function(){
+                var vip_pay=$(".vip_pay li.on");
+                var vip_paytype=$(".vip_paytype li.on");
+                var paytype = vip_paytype.data("id");
+                var id = vip_pay.data("id");
+                var score = vip_pay.data("score");
+                var coin = vip_pay.data("coin");
+                var vip_length = vip_pay.data("length");
+
+                if (paytype=='h51'){
+                    url = "{$apiurl}/appapi/?service=Charge.GetH5Order&jmreq=no"
+                    datastring = {uid:uid,token:token, changeid: id, coin: coin,money:score,cztype:1}
+                }else{
+                    url = "{$apiurl}/appapi/?service=Charge.GetH5Order&jmreq=no"
+                    datastring = {uid:uid,token:token, changeid: id, coin: coin,money:score,cztype:1}
+                }
+
+                layer.confirm('您将花费'+score+'元，'+vip_txt+vip_length+'VIP会员', {
+                    title:'提示',
+                    btn: ['取消','确定'] //按钮
+                }, function(index){
+                    layer.close(index);
+                }, function() {
+                    isbuy = 1;
+                    $.ajax({
+                        url: url,
+                        data: datastring,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data) {
+                            isbuy = 0;
+                            // layer.msg(JSON.stringify())
+                             location.href = 'browser://'+data.data.info[0].url
+                            // window.open(data.data.info[0].url,"_blank","scrollbars=yes,resizable=1,modal=false,alwaysRaised=yes");
+                            return !1;
+                        },
+                        error: function () {
+                            isbuy = 0;
+                            layer.msg("购买失败");
+                            return !1;
+                        }
+                    })
+                })
+
+            });
+        });
+    </script>
 </body>
 </html>

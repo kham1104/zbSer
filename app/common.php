@@ -1743,16 +1743,52 @@
         if($orderinfo['status']!=0){
             return 1;
         }
+        //如果是VIP订单，则增加VIP
+        if($orderinfo['cztype']==1){
+            $giftcount = $orderinfo['coin'];
+            $uid = $orderinfo['uid'];
+            $addtime=time();
+            $endtime=$addtime+60*60*24*30*$giftcount;
+
+            $uservip=Db::name('vip_user')->where(["uid"=>$uid])->find();
+
+            if($uservip){
+                if($uservip['endtime'] > $addtime){
+                    $endtime=$uservip['endtime']+60*60*24*30*$giftcount;
+                }
+                $data=array(
+                    'endtime'=>$endtime,
+                );
+                Db::name('vip_user')->where(["uid"=>$uid])->update($data);
+            }else{
+                $data=array(
+                    'uid'=>$uid,
+                    'addtime'=>$addtime,
+                    'endtime'=>$endtime,
+                );
+                Db::name('vip_user')->insert($data);
+            }
+
+            $result=date("Y.m.d",$endtime);
+
+            $key='vip_'.$uid;
+            $isexist=Db::name("vip_user")->where(["uid"=>$uid])->find();
+            if($isexist){
+                setcaches($key,$isexist);
+            }
+
+            $coin=$orderinfo['coin_give'];//增送的金币
+        }else{
+            $coin=$orderinfo['coin']+$orderinfo['coin_give'];
+        }
         /* 更新会员虚拟币 */
-        $coin=$orderinfo['coin']+$orderinfo['coin_give'];
         Db::name("user")->where("id='{$orderinfo['touid']}'")->setInc("coin",$coin);
         /* 更新 订单状态 */
         
         $data['status']=1;
         Db::name("charge_user")->where("id='{$orderinfo['id']}'")->update($data);
-        
-        
-        setAgentProfit($orderinfo['uid'],$orderinfo['coin']);
+
+//        setAgentProfit($orderinfo['uid'],$orderinfo['coin']);
             
         return 2;
 

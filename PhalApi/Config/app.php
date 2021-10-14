@@ -42,7 +42,8 @@ return array(
      */
     'UCloud' => array(
         //对应的文件路径
-        'host' => 'http://aaa.hulu678.com/upload'
+        'host' => 'http://ccc.hulu678.com/upload',
+        'domain' => 'http://ccc.hulu678.com'
     ),
 		
 		/**

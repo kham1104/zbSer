@@ -12,13 +12,14 @@
         </div>
         <div class="top_code">
             <div class="mycode_title">
-                您的邀请码
+                截屏保存二维码
             </div>
-            <div class="mycode">
-                <span class="code">
-                    <volist name="code_a" id="vo">
-                    <i>{$vo}</i>
-                    </volist>
+            <div id="qrcode" style="width:128px;height: 128px;margin: 0 auto;">
+
+            </div>
+            <div class="mycode" style="line-height:0.5rem;">
+                <span class="code" style="font-size:0.2rem">
+                    {$fx_word}
                 </span>
                 <div class="copy" data-code="{$fx_word}">
                     点击复制去分享
@@ -28,23 +29,25 @@
         </div>
 		<div class="top">
 			<div class="myagent">
-                <span class="li_l">我的上级</span> 
+                <span class="li_l">分享收益</span>
                 
-				<if condition="$agentinfo">
-                    <span class="li_r">{$agentinfo['user_nicename']}</span>
-				<else/>
-                    <a class="agent_add" href="/Appapi/Agent/agent?uid={$uid}&token={$token}">
-                        <span class="li_r">去设置</span>
+<!--				<if condition="$agentinfo">-->
+<!--                    <span class="li_r">{$agentinfo['user_nicename']}</span>-->
+<!--				<else/>-->
+                    <span>{$sharebalance}元</span>
+                    <a class="agent_add" href="/Appapi/Agent/withdraw?uid={$uid}&token={$token}">
+                        <span class="li_r">去提现</span>
                     </a>
-				</if>
+<!--				</if>-->
 			</div>
 		</div>
         <div class="list">
             <ul>
                 <li>
-                    <a class="see" href="/Appapi/Agent/one?uid={$uid}&token={$token}">
-                        <span class="li_l">下级总提成</span> 
-                        <span class="li_r color_default">{$agnet_profit['one_profit']}</span>
+<!--                    <a class="see" href="/Appapi/Agent/sharelist?uid={$uid}&token={$token}">-->
+                    <a class="see" href="#">
+                        <span class="li_l">我的邀请人数</span>
+                        <span class="li_r color_default">{$agentdownsum}</span>
                     </a>
                 </li>
             </ul>
@@ -58,5 +61,23 @@
 	</div>
     <include file="appapi@footer"/>
     <script src="__STATIC__/appapi/js/agent.js"></script>
+    <script>
+        // new QRCode(document.getElementById("qrcode"),"{$fx_url}")
+        $("#qrcode").qrcode({
+            width:128,
+            height:128,
+            text:"{$fx_url}"
+        })
+        // var qrcode = new QRCode(document.getElementById("qrcode"), {
+        //     text: "{$fx_url}",
+        //     width: 128,
+        //     height: 128,
+        //     colorDark : "#000000",
+        //     colorLight : "#ffffff",
+        //     correctLevel : QRCode.CorrectLevel.H,
+        //     // img_src: "img/user.jpg",
+        //     // img_width: 50
+        // });
+    </script>
 </body>
 </html>

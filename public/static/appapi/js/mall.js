@@ -19,6 +19,17 @@ $(function(){
         
         $("#vip_total_coin").text(html);
 	})
+
+	/* vip购买 */
+	$(".vip_paytype ul li").on("click",function(){
+		$(this).siblings().removeClass("on");
+		$(this).addClass("on");
+	})
+
+	$(".vip_pay ul li").on("click",function(){
+		$(this).siblings().removeClass("on");
+		$(this).addClass("on");
+	})
 	
     
 	$(".vip_button").on("click",function(){
@@ -59,7 +70,7 @@ $(function(){
             txt_name=name_score;
         }
 
-		layer.confirm('您将花费'+txt_coin+txt_name+'，'+vip_txt+vip_length+'VIP会员', {
+		layer.confirm('您将花费'+vip_score+'元，'+vip_txt+vip_length+'VIP会员', {
 			title:'提示',
 			btn: ['取消','确定'] //按钮
 		}, function(index){
@@ -81,7 +92,7 @@ $(function(){
                         
                         $(".vip_button").text('续费会员');
                         $(".vip_length_t").text('续费时长');
-                        $(".vip_submit_bd_l").text(name_coin+'续费');
+                        $(".vip_submit_bd_l").text('续费');
                         
                         vip_txt='续费';
 

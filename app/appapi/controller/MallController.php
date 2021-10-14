@@ -30,6 +30,46 @@ class MallController extends HomebaseController {
         
 		$this->assign("uid",$uid);
 		$this->assign("token",$token);
+
+		//获取支付方式
+        $configpri=getConfigPri();
+        $h5_switch = $configpri['h5_switch'];
+        $shelves=1;
+        $paylist=[];
+
+        if($h5_switch && $shelves){
+            $paylist[]=[
+                'id'=>'h51',
+                'name'=>'支付宝H5',
+                'thumb'=>get_upload_path("/static/app/pay/ali.png"),
+                'href'=>'',
+            ];
+//            $paylist[]=[
+//                'id'=>'h52',
+//                'name'=>'支付宝H5',
+//                'thumb'=>get_upload_path("/static/app/pay/ali.png"),
+//                'href'=>'',
+//            ];
+//            $paylist[]=[
+//                'id'=>'h53',
+//                'name'=>'支付宝H5',
+//                'thumb'=>get_upload_path("/static/app/pay/ali.png"),
+//                'href'=>'',
+//            ];
+//            $paylist[]=[
+//                'id'=>'h54',
+//                'name'=>'支付宝H5',
+//                'thumb'=>get_upload_path("/static/app/pay/ali.png"),
+//                'href'=>'',
+//            ];
+//            $paylist[]=[
+//                'id'=>'h55',
+//                'name'=>'支付宝H5',
+//                'thumb'=>get_upload_path("/static/app/pay/ali.png"),
+//                'href'=>'',
+//            ];
+        }
+        $this->assign("paylist",$paylist);
         
         $user= Db::name("user")->field("id,user_nicename,coin,score")->where(["id"=>$uid])->find();;
         $this->assign("user",$user);
@@ -57,6 +97,7 @@ class MallController extends HomebaseController {
 		$this->assign("vip_txt",$vip_txt);
         
         $configpub=getConfigPub();
+        $this->assign("apiurl",$configpub['site']);
         /* 靓号 */
 		$liang_list=Db::name('liang')->where("status=0")->order("list_order asc,id desc")->limit(21)->select()->toArray();
         foreach($liang_list as $k=>$v){

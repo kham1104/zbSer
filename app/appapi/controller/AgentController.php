@@ -61,20 +61,148 @@ class AgentController extends HomebaseController {
 			'one_profit'=>number_format($one_profit),
 		);
 
+		//统计我的下级人数
+        $agentdownsum=Db::name("agent")->where(["one_uid"=>$uid])->count();
+        //统计当前分享所得的余额
+        $sharebalance = Db::name("user")->where(["id"=>$uid])->value('balance');
+
 		$site_info = getConfigPub();
 
-		$fx_word = $site_info['fx_word'].' '.$site_info['fx_url'].'?code='.$code;
+		$fx_word = $site_info['fx_word'].' '.$site_info['fx_url'].$code;
 
 		$this->assign("uid",$uid);
 		$this->assign("fx_word",$fx_word);
+		$this->assign("fx_url",$site_info['fx_url'].$code);
 		$this->assign("token",$token);
 		$this->assign("userinfo",$userinfo);
 		$this->assign("agentinfo",$agentinfo);
 		$this->assign("agnet_profit",$agnet_profit);
+		$this->assign("agentdownsum",$agentdownsum);
+		$this->assign("sharebalance",$sharebalance);
 
 		return $this->fetch();
 	    
 	}
+
+	//余额提现
+	function withdraw(){
+        $data = $this->request->param();
+        $uid=isset($data['uid']) ? $data['uid']: '';
+        $token=isset($data['token']) ? $data['token']: '';
+        $uid=(int)checkNull($uid);
+        $token=checkNull($token);
+
+        $checkToken=checkToken($uid,$token);
+        if($checkToken==700){
+            $reason='您的登陆状态失效，请重新登陆！';
+            $this->assign('reason', $reason);
+            return $this->fetch(':error');
+        }
+
+        $b=Db::name('user')
+            ->field('balance,balance_total')
+            ->where('id','=', $uid)
+            ->find();
+
+        $this->assign("uid",$uid);
+        $this->assign("token",$token);
+        $this->assign("balance",$b['balance']);
+        $this->assign("balance_total",$b['balance_total']);
+	    return  $this->fetch();
+    }
+
+    //帐户列表
+    function getaccountlist(){
+        $rs=array('code'=>0,'info'=>array(),'msg'=>'设置成功');
+        $data = $this->request->param();
+        $uid=isset($data['uid']) ? $data['uid']: '';
+        $uid=(int)checkNull($uid);
+
+        $list=Db::name('cash_account')
+            ->where(["uid"=>$uid])
+            ->order("addtime desc")
+            ->select();
+
+//        return $list;
+        $rs['info'] = $list;
+        echo json_encode($rs);
+        exit;
+    }
+
+    //提现
+    function withdraw_submit(){
+        $rs=array('code'=>0,'info'=>array(),'msg'=>'提现成功,等待审核');
+        $data = $this->request->param();
+        $uid=(int)checkNull($data['uid']);
+        $token=checkNull($data['token']);
+        $accountid=checkNull($data['accountid']);
+        $money=checkNull($data['money']);
+        $time=checkNull($data['time']);
+
+        $checkToken=checkToken($uid,$token);
+        if($checkToken==700){
+            $reason='您的登陆状态失效，请重新登陆！';
+            $this->assign('reason', $reason);
+            return $this->fetch(':error');
+        }
+
+        if(!$accountid){
+            $rs['code'] = 1001;
+            $rs['msg'] = '请选择提现账号';
+            return $rs;
+        }
+
+        if(!$money){
+            $rs['code'] = 1002;
+            $rs['msg'] = '请输入有效的提现金额';
+            return $rs;
+        }
+
+        $now=time();
+        if($now-$time>300){
+            $rs['code']=1001;
+            $rs['msg']='参数错误';
+            return $rs;
+        }
+
+        $configpri=getConfigPri();
+
+        $data=array(
+            'uid'=>$uid,
+            'accountid'=>$accountid,
+            'money'=>$money,
+        );
+
+        $res = $this->setShopCash($data);
+
+        if($res==1001){
+            $rs['code'] = 1001;
+            $rs['msg'] = '余额不足';
+            return $rs;
+        }else if($res==1004){
+            $rs['code'] = 1004;
+            $rs['msg'] = '提现最低额度为'.$configpri['balance_cash_min'].'元';
+            return $rs;
+        }else if($res==1005){
+            $rs['code'] = 1005;
+            $rs['msg'] = '不在提现期限内，不能提现';
+            return $rs;
+        }else if($res==1006){
+            $rs['code'] = 1006;
+            $rs['msg'] = '每月只可提现'.$configpri['balance_cash_max_times'].'次,已达上限';
+            return $rs;
+        }else if($res==1007){
+            $rs['code'] = 1007;
+            $rs['msg'] = '提现账号信息不正确';
+            return $rs;
+        }else if(!$res){
+            $rs['code'] = 1002;
+            $rs['msg'] = '提现失败，请重试';
+            return $rs;
+        }
+
+        return $rs;
+    }
 	
 	function agent(){
 		$data = $this->request->param();
@@ -185,7 +313,8 @@ class AgentController extends HomebaseController {
 		Db::name('agent')->insert($data);
 
 		//发放奖励
-        Db::name('user')->where('id',$uid)->setInc('coin',200);
+//        Db::name('user')->where('id',$uid)->setInc('coin',200);
+
 
 		echo json_encode($rs);
 		exit;
@@ -281,4 +410,116 @@ class AgentController extends HomebaseController {
 		exit;
 	}
 
+
+    //用户商城提现
+    private function setShopCash($data){
+
+        $nowtime=time();
+
+        $uid=$data['uid'];
+        $accountid=$data['accountid'];
+        $money=$data['money'];
+
+        $configpri=getConfigPri();
+        $balance_cash_start=$configpri['balance_cash_start'];
+        $balance_cash_end=$configpri['balance_cash_end'];
+        $balance_cash_max_times=$configpri['balance_cash_max_times'];
+
+        $day=(int)date("d",$nowtime);
+
+        if($day < $balance_cash_start || $day > $balance_cash_end){
+            return 1005;
+        }
+
+        //本月第一天
+        $month=date('Y-m-d',strtotime(date("Ym",$nowtime).'01'));
+        $month_start=strtotime(date("Ym",$nowtime).'01');
+
+        //本月最后一天
+        $month_end=strtotime("{$month} +1 month");
+
+        if($balance_cash_max_times){
+            $count=Db::name('user_balance_cashrecord')
+                ->where('uid','=',$uid)
+                ->where('addtime','>',$month_start)
+                ->where('addtime','<',$month_end)
+                ->count();
+            if($count >= $balance_cash_max_times){
+                return 1006;
+            }
+        }
+
+
+        /* 钱包信息 */
+        $accountinfo=Db::name('cash_account')
+            ->where('id','=',$accountid)
+            ->where('uid','=',$uid)
+            ->find();
+
+        if(!$accountinfo){
+            return 1007;
+        }
+
+
+        /* 最低额度 */
+        $balance_cash_min=$configpri['balance_cash_min'];
+
+        if($money < $balance_cash_min){
+            return 1004;
+        }
+
+
+        $ifok=Db::name('user')
+            ->where('id','=', $uid)
+            ->where('balance','>=',$money)
+//            ->update(array('balance' => new NotORM_Literal("balance - {$money}")) );
+            ->setDec('balance',$money);
+
+        if(!$ifok){
+            return 1001;
+        }
+
+
+
+        $data=array(
+            "uid"=>$uid,
+            "money"=>$money,
+            "orderno"=>$uid.'_'.$nowtime.rand(100,999),
+            "status"=>0,
+            "addtime"=>$nowtime,
+            "type"=>$accountinfo['type'],
+            "account_bank"=>$accountinfo['account_bank'],
+            "account"=>$accountinfo['account'],
+            "name"=>$accountinfo['name'],
+        );
+
+        $rs=Db::name('user_balance_cashrecord')->insert($data);
+        if(!$rs){
+            return 1002;
+        }
+
+        return $rs;
+    }
+
+    public function withdraw_list(){
+        $rs=array('code'=>0,'info'=>array(),'msg'=>'成功');
+        $data = $this->request->param();
+        $uid=(int)checkNull($data['uid']);
+        $token=checkNull($data['token']);
+
+        $checkToken=checkToken($uid,$token);
+        if($checkToken==700){
+            $reason='您的登陆状态失效，请重新登陆！';
+            $this->assign('reason', $reason);
+            return $this->fetch(':error');
+        }
+
+        $list=Db::name('user_balance_cashrecord')
+            ->where('uid','=',$uid)
+            ->order('addtime desc')
+            ->select();
+
+        $rs['info'] = $list;
+        echo json_encode($rs);
+    }
 }

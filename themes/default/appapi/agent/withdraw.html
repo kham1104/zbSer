@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<include file="appapi@head"/>
+		<title>分享收益提现</title>
+		<link href='__STATIC__/appapi/css/withdraw.css' rel="stylesheet" type="text/css" >
+	</head>
+<body >
+	<div class="balance">
+		<div class="balance_txt l">
+			<div>总收益</div>
+			<div>{$balance_total}</div>
+		</div>
+		<div class="balance_txt r">
+			<div>余额</div>
+			<div>{$balance}</div>
+		</div>
+	</div>
+
+	<div class="withdraw">
+		<div class="withdraw_line">
+			<div class="title">输入要提现的金额</div>
+			<div><input type="text" id="money" name="money" placeholder="0" style="width:48%"></div>
+		</div>
+		<div class="withdraw_line">
+			<div class="title">选择提现帐户</div>
+			<div>
+				<select name="accountid" id="accountid" style="width:48%">
+					<option value="0"></option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<div style="width: 96%;color:red;text-align: center;">帐户在'我的-我的收益'中添加</div>
+	<div class="wdbutton" id="submit">
+		<span>立即提现</span>
+	</div>
+
+	<div class="withdraw_list">
+		<ul id="list">
+			<li>
+				<div class="txt w4">支付宝</div>
+				<div class="txt w1">金额</div>
+				<div class="txt w4">时间</div>
+				<div class="txt w1">状态</div>
+			</li>
+		</ul>
+	</div>
+<!--	<empty name="list">-->
+<!--	<div class="empty"></div>-->
+<!--	</empty>-->
+	<include file="appapi@footer"/>
+	<script>
+	$(function(){
+		function getaccountlist(){
+			$.ajax({
+				url: '/appapi/Agent/getaccountlist',
+				data: {'uid': {$uid}},
+				type: 'post',
+				dataType: 'json',
+				success: function (data) {
+					$('#accountid').empty();
+					// console.log(JSON.stringify(data))
+					$.each(data.info,function(i, item){
+						// console.log(item);
+						if(item.type==1){typetxt='支付宝'}
+						if(item.type==2){typetxt='微信'}
+						if(item.type==3){typetxt='银行卡'}
+						html="<option value="+item.id+">"+typetxt+"  "+item.account+"</option>";
+						$('#accountid').append(html);
+					})
+				}
+			});
+		}
+		getaccountlist();
+		//提现
+		$('#submit').click(function () {
+			var time = Date.parse(new Date())/1000;
+			// var selectText = $("#accountid").find("option:selected").text();
+			var selectText = $("#accountid").val();
+			$.ajax({
+				url: '/appapi/Agent/withdraw_submit',
+				data: {'uid': {$uid},'token':'{$token}','time':time,'accountid':selectText,'money':$('#money').val()},
+				type: 'post',
+				dataType: 'json',
+				success: function (data) {
+					console.log(JSON.stringify(data))
+					if(data.code!=0){
+						layer.msg(data.msg)
+					}else{
+						layer.msg(data.msg)
+						location.reload();
+					}
+				}
+			});
+		});
+
+		function getlistmore(){
+			$.ajax({
+				url:'/appapi/Agent/withdraw_list',
+				data:{'uid':uid,'token':token},
+				type:'post',
+				dataType:'json',
+				success:function(data){
+					console.log(JSON.stringify(data))
+					$(".withdraw_list ul").empty();
+					$.each(data.info,function (i,item){
+						if(item.type==1){txt = '支付宝'}
+						if(item.type==2){txt = '微信'}
+						if(item.type==3){txt = '银行卡'}
+						var now=new Date(item.addtime*1000);
+						var year=now.getFullYear();
+						var month=now.getMonth()+1;
+						var date=now.getDate();
+						var hour=now.getHours();
+						var minute=now.getMinutes();
+						var second=now.getSeconds();
+						var timed = year+"-"+month+"-"+date;
+						if(item.status==0){stxt = '审核'}
+						if(item.status==1){stxt = '确认'}
+						if(item.status==2){stxt = '拒绝'}
+						html='<li>\
+								<div class="txt w4">'+txt+item.account+'</div>\
+								<div class="txt w2">'+item.money+'</div>\
+								<div class="txt w3">'+timed+'</div>\
+								<div class="txt w1">'+stxt+'</div>\
+							</li>';
+						$(".withdraw_list ul").append(html);
+					});
+
+				}
+			})
+		}
+
+		getlistmore();
+
+	})
+	</script>
+</body>
+</html>

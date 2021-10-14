@@ -297,6 +297,10 @@ class Api_User extends PhalApi_Api {
 			$shelves=0;
 		}
 //        $list1[]=array('id'=>'19','name'=>'我的视频','thumb'=>get_upload_path("/static/appapi/images/personal/video.png"),'href'=>'' );
+        $list2[]=array('id'=>'4','name'=>'VIP充值','thumb'=>get_upload_path("/static/appapi/images/personal/shop.png") ,'href'=>get_upload_path("/Appapi/Mall/index"));
+        if($agent_switch){
+            $list2[]=array('id'=>'8','name'=>'邀请奖励','thumb'=>get_upload_path("/static/appapi/images/personal/agent.png") ,'href'=>get_upload_path("/Appapi/Agent/index"));
+        }
         $list1[]=array('id'=>'17','name'=>'意见反馈','thumb'=>get_upload_path("/static/appapi/images/personal/video.png") ,'href'=>get_upload_path('/Appapi/feedback/index'));
 
         $list1[]=array('id'=>'23','name'=>'我的动态','thumb'=>get_upload_path("/static/appapi/images/personal/dymic.png"),'href'=>'' );
@@ -318,7 +322,7 @@ class Api_User extends PhalApi_Api {
         $list2[]=array('id'=>'20','name'=>'房间管理','thumb'=>get_upload_path("/static/appapi/images/personal/room.png") ,'href'=>'');
 		if($shelves){
 			//$list1[]=array('id'=>'14','name'=>'我的明细','thumb'=>get_upload_path("/static/appapi/images/personal/detail.png") ,'href'=>get_upload_path("/Appapi/Detail/index"));
-			//$list2[]=array('id'=>'4','name'=>'在线商城','thumb'=>get_upload_path("/static/appapi/images/personal/shop.png") ,'href'=>get_upload_path("/Appapi/Mall/index"));
+//			$list2[]=array('id'=>'4','name'=>'VIP充值','thumb'=>get_upload_path("/static/appapi/images/personal/shop.png") ,'href'=>get_upload_path("/Appapi/Mall/index"));
 			$list2[]=array('id'=>'5','name'=>'装备中心','thumb'=>get_upload_path("/static/appapi/images/personal/equipment.png") ,'href'=>get_upload_path("/Appapi/Equipment/index"));
 		}
         
@@ -329,9 +333,7 @@ class Api_User extends PhalApi_Api {
 			$list2[]=array('id'=>'7','name'=>'家族驻地','thumb'=>get_upload_path("/static/appapi/images/personal/family2.png") ,'href'=>get_upload_path("/Appapi/Family/home"));
 		}
 		
-		if($agent_switch){
-			$list2[]=array('id'=>'8','name'=>'邀请奖励','thumb'=>get_upload_path("/static/appapi/images/personal/agent.png") ,'href'=>get_upload_path("/Appapi/Agent/index"));
-		}
+
         if($service_switch && $service_url){
            $list3[]=array('id'=>'21','name'=>'在线客服(Beta)','thumb'=>get_upload_path("/static/appapi/images/personal/kefu.png") ,'href'=>$service_url); 
         }
@@ -1853,8 +1855,8 @@ class Api_User extends PhalApi_Api {
     	$rs = array('code' => 0, 'msg' => '提现成功', 'info' => array());
         
         $uid=checkNull($this->uid);
-        $token=checkNull($this->token);		
-        $accountid=checkNull($this->accountid);		
+        $token=checkNull($this->token);
+        $accountid=checkNull($this->accountid);
         $money=checkNull($this->money);
         $time=checkNull($this->time);
         $sign=checkNull($this->sign);

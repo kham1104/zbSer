@@ -518,7 +518,7 @@ class Model_User extends PhalApi_Model_NotORM {
 		if(!$oneinfo){
 			return 1002;
 		}
-		
+
 		//获取邀请码用户的邀请信息
 		$agentinfo=DI()->notorm->agent
 				->select("*")
@@ -533,6 +533,62 @@ class Model_User extends PhalApi_Model_NotORM {
         // 判断对方是否自己下级
         if($agentinfo['one_uid']==$uid ){
             return 1003;
+        }
+
+        //发放邀请人奖励
+        $agentuserinfo = DI()->notorm->user
+            ->select("balance,balance_total")
+            ->where('id=?',$oneinfo['uid'])
+            ->fetchOne();
+        if(!$agentuserinfo){
+            return 1002;
+        }
+        $configPub = getConfigPub();
+        $inCny = $configPub['fx_cny'];
+        $inVip = $configPub['fx_vip'];
+        //发放人民币
+        if($inCny>0){
+            $balance = $inCny + $agentuserinfo['balance'];
+            $balance_total = $inCny + $agentuserinfo['balance_total'];
+            DI()->notorm->user
+                ->where('id=?',$oneinfo['uid'])
+                ->update(array( 'balance'=>$balance,'balance_total'=>$balance_total ) );
+        }
+        //发放VIP
+        if($inVip>0){
+            $addtime=time();
+            $endtime=$addtime+60*60*24*30*$inVip;
+
+            $vipinfo = DI()->notorm->vip_user
+                ->where('uid=?',$oneinfo['uid'])
+                ->fetchOne();
+            if($vipinfo){
+                if($vipinfo['endtime'] > $addtime){
+                    $endtime=$vipinfo['endtime']+60*60*24*30*$inVip;
+                }
+                $data=array(
+                    'endtime'=>$endtime,
+                );
+                DI()->notorm->vip_user
+                    ->where('uid=?',$oneinfo['uid'])
+                    ->update($data);
+            }else{
+                $data=array(
+                    'uid'=>$oneinfo['uid'],
+                    'addtime'=>$addtime,
+                    'endtime'=>$endtime,
+                );
+                DI()->notorm->vip_user
+                    ->insert($data);
+            }
+            //更新VIP缓存
+            $key='vip_'.$oneinfo['uid'];
+            $isexist=DI()->notorm->vip_user
+                ->where('uid=?',$oneinfo['uid'])
+                ->fetchOne();
+            if($isexist){
+                setcaches($key,$isexist);
+            }
         }
 		
 		$data=array(

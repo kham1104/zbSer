@@ -18,7 +18,7 @@ return [
     'default_lang'           => 'zh-cn',
     
     // 默认模块名
-    'default_module'         => 'home',
+    'default_module'         => 'portal',
 ];
 
 

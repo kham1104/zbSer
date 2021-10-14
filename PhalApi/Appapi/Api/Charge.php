@@ -17,6 +17,8 @@ class Api_Charge extends PhalApi_Api {
                 'changeid' => array('name' => 'changeid', 'type' => 'int',  'require' => true, 'desc' => '充值规则ID'),
                 'coin' => array('name' => 'coin', 'type' => 'string',  'require' => true, 'desc' => '钻石'),
                 'money' => array('name' => 'money', 'type' => 'string', 'require' => true, 'desc' => '充值金额'),
+                'jmreq' => array('name' => 'jmreq', 'type' => 'string', 'desc' => ''),
+                'cztype' => array('name' => 'cztype', 'type' => 'string', 'desc' => '充值类型(不传默认钻石)，1为VIP'),
             ),
 			'getWxOrder' => array( 
 				'uid' => array('name' => 'uid', 'type' => 'int', 'min' => 1, 'require' => true, 'desc' => '用户ID'),
@@ -190,20 +192,32 @@ class Api_Charge extends PhalApi_Api {
      */
     public function getH5Order(){
         $rs = array('code' => 0, 'msg' => '', 'info' => array());
+        if(!empty($this->jmreq)){
+            $rs['jmreq'] = $this->jmreq;
+        }
 
         $uid=$this->uid;
         $changeid=$this->changeid;
         $coin=checkNull($this->coin);
         $money=checkNull($this->money);
 
+        if(empty($this->cztype)){
+            $cztype=0;
+            if($coin==0){
+                $rs['code']=1002;
+                $rs['msg']='信息错误';
+                return $rs;
+            }
+        }else{
+            $cztype=$this->cztype;
+            $coin=0;
+        }
+
+
         $orderid=$this->getOrderid($uid);
         $type=1;
 
-        if($coin==0){
-            $rs['code']=1002;
-            $rs['msg']='信息错误';
-            return $rs;
-        }
+
 
         $orderinfo=array(
             "uid"=>$uid,
@@ -213,11 +227,12 @@ class Api_Charge extends PhalApi_Api {
             "orderno"=>$orderid,
             "type"=>$type,
             "status"=>0,
-            "addtime"=>time()
+            "addtime"=>time(),
+            "cztype"=>$cztype
         );
 
         $domain = new Domain_Charge();
-        $info = $domain->getOrderId($changeid,$orderinfo);
+        $info = $domain->getOrderId($changeid,$orderinfo,$cztype);
         if($info==1003){
             $rs['code']=1003;
             $rs['msg']='订单信息有误，请重新提交';
